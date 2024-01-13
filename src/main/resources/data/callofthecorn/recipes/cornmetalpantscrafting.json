@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "# #",
+        "# #"
+    ],
+    "key": {
+        "#": {
+            "item": "callofthecorn:cornmetalbar"
+        }
+    },
+    "result": {
+        "item": "callofthecorn:cornmetalpants",
+        "count": 1
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#G#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "callofthecorn:cornmetalbar"
+    },
+    "G": {
+      "item": "callofthecorn:greatersoul"
+    }
+  },
+  "result": {
+    "item": "callofthecorn:maizerite",
+    "count": 8
+  }
+}

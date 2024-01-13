@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " #L",
+        " i#",
+        "i  "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:redstone"
+        },
+        "L": {
+            "item": "callofthecorn:lessersoul"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "callofthecorn:cornstaff",
+        "count": 1
+    }
+}

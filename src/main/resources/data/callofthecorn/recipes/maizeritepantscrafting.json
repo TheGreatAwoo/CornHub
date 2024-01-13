@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "# #",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "callofthecorn:maizerite"
+    }
+  },
+  "result": {
+    "item": "callofthecorn:maizeritepants",
+    "count": 1
+  }
+}

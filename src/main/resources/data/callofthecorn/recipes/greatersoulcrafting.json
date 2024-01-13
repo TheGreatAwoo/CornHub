@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#L"
+  ],
+  "key": {
+    "#": {
+      "item": "callofthecorn:cornsoul"
+    },
+    "L": {
+      "item": "callofthecorn:greatersoul"
+    }
+  },
+  "result": {
+    "item": "callofthecorn:greatersoul",
+    "count": 2
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "temperature": 0.8,
+  "downfall": 0.4,
+  "precipitation": "none",
+  "temperature_modifier": "none",
+  "creature_spawn_probability": 1,
+  "effects": {
+    "sky_color": 24927,
+    "fog_color": 16761512,
+    "water_color": 32817,
+    "water_fog_color": 329011,
+    "grass_color": 3566601,
+    "foliage_color": 21006,
+    "grass_color_modifier": "swamp"
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "callofthecorn:pumpking",
+        "weight": 1,
+        "minCount": 1,
+        "maxCount": 1
+      },
+      {
+        "type": "callofthecorn:cropwatcher",
+        "weight": 250,
+        "minCount": 2,
+        "maxCount": 4
+      },
+      {
+        "type": "callofthecorn:scarecrow",
+        "weight": 1000,
+        "minCount": 4,
+        "maxCount": 10
+      },
+      {
+        "type": "minecraft:cow",
+        "weight": 20,
+        "minCount": 2,
+        "maxCount": 5
+      },
+      {
+        "type": "minecraft:pig",
+        "weight": 10,
+        "minCount": 2,
+        "maxCount": 5
+      },
+      {
+        "type": "minecraft:donkey",
+        "weight": 5,
+        "minCount": 0,
+        "maxCount": 3
+      }
+    ]
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [
+      "minecraft:grass_bonemeal",
+      "minecraft:patch_grass_taiga_2",
+      "callofthecorn:cornpatch"
+    ]
+  ]
+}

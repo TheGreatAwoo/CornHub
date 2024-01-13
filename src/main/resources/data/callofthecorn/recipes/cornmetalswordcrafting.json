@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "#",
+    "C"
+  ],
+  "key": {
+    "#": {
+      "item": "callofthecorn:cornmetalbar"
+    },
+    "C": {
+      "item": "callofthecorn:corn"
+    }
+  },
+  "result": {
+    "item": "callofthecorn:cornmetalsword",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#G#",
+    "#E#",
+    "#G#"
+  ],
+  "key": {
+    "#": {
+      "item": "callofthecorn:maizerite"
+    },
+    "G": {
+      "item": "callofthecorn:greatersoul"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    }
+  },
+  "result": {
+    "item": "callofthecorn:harvestegg",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "callofthecorn:lessersoul"
+    }
+  },
+  "result": {
+    "item": "callofthecorn:farmhandegg",
+    "count": 1
+  }
+}

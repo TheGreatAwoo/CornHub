@@ -1,0 +1,8 @@
+
+{
+	"parent": "block/cross",
+	"textures": {
+		"cross": "callofthecorn:blocks/corn_seed0"
+
+	},  "render_type": "cutout"
+}

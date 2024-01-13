@@ -1,0 +1,63 @@
+{
+    "item.callofthecorn.cornmetalpants":"Corn Metal Pants",
+    "item.callofthecorn.cornmetalfeet":"Corn Metal Shoes",
+    "item.callofthecorn.cornmetalhead":"Corn Metal Helmet",
+    "item.callofthecorn.cornmetalchest":"Corn Metal Chestplate",
+
+    "item.callofthecorn.lessersoul":"Lesser Soul",
+    "item.callofthecorn.mildsoul":"Mild Soul",
+    "item.callofthecorn.greatersoul":"Greater Soul",
+    "item.callofthecorn.farmhandegg":"Summon Farmhand",
+    "item.callofthecorn.hewhoharvestsegg":"Summon He Who Harvests",
+    "item.callofthecorn.harvestegg":"Begin Harvest",
+
+    "item.callofthecorn.maizerite":"Maizerite Ingot",
+    "item.callofthecorn.maizeriteaxe":"Maizerite Axe",
+    "item.callofthecorn.maizeritehoe":"Maizerite Hoe",
+    "item.callofthecorn.maizeritepick":"Maizerite Pickaxe",
+    "item.callofthecorn.maizeritesword":"Maizerite Sword",
+    "item.callofthecorn.maizeriteshovel":"Maizerite Shovel",
+    "item.callofthecorn.maizeritebow":"Maizerite Bow",
+
+    "item.callofthecorn.cornmetalbar":"Corn Ingot",
+    "item.callofthecorn.cornmetalaxe":"Corn Metal Axe",
+    "item.callofthecorn.cornmetalhoe":"Corn Metal Hoe",
+    "item.callofthecorn.cornmetalpick":"Corn Metal Pickaxe",
+    "item.callofthecorn.cornmetalsword":"Corn Metal Sword",
+    "item.callofthecorn.cornmetalshovel":"Corn Metal Shovel",
+    "item.callofthecorn.cornmetalbow":"Corn Metal Bow",
+
+    "item.callofthecorn.maizeritepants":"Maizerite Pants",
+    "item.callofthecorn.maizeritehead":"Maizerite Helmet",
+    "item.callofthecorn.maizeritefeet":"Maizerite Shoes",
+    "item.callofthecorn.maizeritechest":"Maizerite Chestplate",
+
+    "item.callofthecorn.kernal":"The Kernal",
+    "item.callofthecorn.corn":"Corn",
+    "item.callofthecorn.cornsoul":"Corn Soul",
+    "item.callofthecorn.popcorn":"Popcorn",
+    "item.callofthecorn.creamedcorn":"Creamed Corn",
+
+
+
+    "item.callofthecorn.cornstaff":"Corn Staff",
+    "item.callofthecorn.cornmetalstaff":"Corn Metal Staff",
+    "item.callofthecorn.maizeritestaff":"Maizerite Staff",
+    "item.callofthecorn.crowstaff":"Crow Staff",
+    "item.callofthecorn.harveststaff":"Harvest Staff",
+    "item.callofthecorn.sythe":"Sythe",
+    "item.callofthecorn.pitchfork":"Pitchfork",
+
+    "biome.callofthecorn.cornbiome": "Corn Biome",
+    "block.callofthecorn.corn_seed":"Corn Seeds",
+    "itemGroup.Corn": "Corn Items",
+
+
+    "entity.callofthecorn.scarecrow": "Scarecrow",
+    "entity.callofthecorn.farmhand": "Farmhand",
+    "entity.callofthecorn.harvester": "Harvester",
+    "entity.callofthecorn.harvest": "Crow of Autumn Harvest",
+    "entity.callofthecorn.cropwatcher": "Crop Watcher",
+    "entity.callofthecorn.pumpking": "Pump King",
+    "entity.callofthecorn.crow": "Crow"
+}
