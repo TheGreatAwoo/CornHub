@@ -73,17 +73,17 @@ public class HarvesterScythe extends HoeItem {
 
 
     private void createSpellEntity(double p_32673_, double p_32674_, double p_32675_, double p_32676_, float p_32677_, int p_32678_) {
-        BlockPos blockpos = new BlockPos(p_32673_, p_32676_, p_32674_);
+        BlockPos blockpos = BlockPos.containing(p_32673_, p_32676_, p_32674_);
         boolean flag = false;
         double d0 = 0.0D;
 
         do {
             BlockPos blockpos1 = blockpos.below();
-            BlockState blockstate = player.level.getBlockState(blockpos1);
-            if (blockstate.isFaceSturdy(player.level, blockpos1, Direction.UP)) {
-                if (!player.level.isEmptyBlock(blockpos)) {
-                    BlockState blockstate1 = player.level.getBlockState(blockpos);
-                    VoxelShape voxelshape = blockstate1.getCollisionShape(player.level, blockpos);
+            BlockState blockstate = player.level().getBlockState(blockpos1);
+            if (blockstate.isFaceSturdy(player.level(), blockpos1, Direction.UP)) {
+                if (!player.level().isEmptyBlock(blockpos)) {
+                    BlockState blockstate1 = player.level().getBlockState(blockpos);
+                    VoxelShape voxelshape = blockstate1.getCollisionShape(player.level(), blockpos);
                     if (!voxelshape.isEmpty()) {
                         d0 = voxelshape.max(Direction.Axis.Y);
                     }
@@ -97,7 +97,7 @@ public class HarvesterScythe extends HoeItem {
         } while(blockpos.getY() >= Mth.floor(p_32675_) - 1);
 
         if (flag) {
-            player.level.addFreshEntity(new EvokerFangs(player.level, p_32673_, (double)blockpos.getY() + d0, p_32674_, p_32677_, p_32678_, player));
+            player.level().addFreshEntity(new EvokerFangs(player.level(), p_32673_, (double)blockpos.getY() + d0, p_32674_, p_32677_, p_32678_, player));
         }
 
     }

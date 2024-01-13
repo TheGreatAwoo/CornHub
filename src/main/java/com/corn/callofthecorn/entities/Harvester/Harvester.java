@@ -12,6 +12,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -31,11 +32,11 @@ import com.corn.callofthecorn.enums.LightingBall;
 public class Harvester extends Skeleton {
 
     public static int MAX_HP = 300;
-    public static int AttackDamage=10;
+    public static int AttackDamage = 10;
     public LivingEntity target;
     public double distance;
     private int explosionPower = 1;
-    private final ServerBossEvent bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
 
 //
 //    @Nullable
@@ -46,9 +47,10 @@ public class Harvester extends Skeleton {
 
 
     @Override
-    public int getExperienceReward (){
-        return (super.getExperienceReward()*120);
+    public int getExperienceReward() {
+        return (super.getExperienceReward() * 120);
     }
+
     @Override
     public void startSeenByPlayer(ServerPlayer p_31483_) {
         super.startSeenByPlayer(p_31483_);
@@ -62,7 +64,6 @@ public class Harvester extends Skeleton {
     }
 
 
-
     public Harvester(EntityType<? extends Harvester> type, Level level) {
         super(type, level);
         this.canSpawnSprintParticle();
@@ -73,13 +74,16 @@ public class Harvester extends Skeleton {
     protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
         super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
         ItemEntity itementity = this.spawnAtLocation(ItemInit.GREATERSOUL.get());
-        itementity.setGlowingTag(true);itementity.setInvulnerable(true);
-         itementity = this.spawnAtLocation(ItemInit.GREATERSOUL.get());
-         itementity = this.spawnAtLocation(ItemInit.GREATERSOUL.get());
+        itementity.setGlowingTag(true);
+        itementity.setInvulnerable(true);
+        itementity = this.spawnAtLocation(ItemInit.GREATERSOUL.get());
+        itementity = this.spawnAtLocation(ItemInit.GREATERSOUL.get());
         itementity = this.spawnAtLocation(ItemInit.GREATERSOUL.get());
 
         Random ran = new Random();
-        if(ran.nextInt(5)==5){ itementity = this.spawnAtLocation(ItemInit.HARVESTERSCYTHE.get());}
+        if (ran.nextInt(5) == 5) {
+            itementity = this.spawnAtLocation(ItemInit.HARVESTERSCYTHE.get());
+        }
 
 
         if (itementity != null) {
@@ -90,30 +94,30 @@ public class Harvester extends Skeleton {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource p_219059_, DifficultyInstance p_219060_) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemInit.HARVESTERSCYTHE.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND,new ItemStack(Items.BOW));
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
 
     }
 
 
     @Override
-    public boolean doHurtTarget(Entity p_28837_) {
+    public boolean doHurtTarget(Entity target) {
         if (distance < 1) {
-            this.level.broadcastEntityEvent(this, (byte) 4);
+            this.level().broadcastEntityEvent(this, (byte) 4);
             float f = AttackDamage;
             float f1 = (int) f > 0 ? f / 2.0F + (float) this.random.nextInt((int) f) : f;
-            boolean flag = p_28837_.hurt(DamageSource.mobAttack(this), f1);
+            boolean flag = target.hurt(level().damageSources().mobAttack(this), f1);
             if (flag) {
-                 p_28837_.setDeltaMovement(p_28837_.getDeltaMovement().add(5F, (double) 0.0F, 0.0D));
-                this.doEnchantDamageEffects(this, p_28837_);
-                this.setItemSlot(EquipmentSlot.OFFHAND,new ItemStack(Items.BOW));
+                target.setDeltaMovement(target.getDeltaMovement().add(5F, 0.0F, 0.0D));
+                this.doEnchantDamageEffects(this, target);
+                this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
 
             }
 
             return flag;
+        } else {
+            this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
+            return false;
         }
-        else{
-            this.setItemSlot(EquipmentSlot.OFFHAND,new ItemStack(Items.BOW));
-            return false;}
 
     }
 
@@ -122,11 +126,12 @@ public class Harvester extends Skeleton {
     public void tick() {
         super.tick();
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
-        this.level.addParticle(ParticleTypes.DRAGON_BREATH, this.getX() + this.random.nextGaussian(), this.getY() + (double)(this.random.nextFloat() * 3.3F), this.getZ() + this.random.nextGaussian(), (double)0.7F, (double)0.7F, (double)0.9F);
+        this.level().addParticle(ParticleTypes.DRAGON_BREATH, this.getX() + this.random.nextGaussian(), this.getY() + (double) (this.random.nextFloat() * 3.3F), this.getZ() + this.random.nextGaussian(), 0.7F, 0.7F, 0.9F);
         this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE));
     }
+
     int Barrage = 0;
-    int Lightning=0;
+    int Lightning = 0;
 
 
     @Override
@@ -136,20 +141,30 @@ public class Harvester extends Skeleton {
         double d0 = target.getX() - this.getX();
         double d1 = target.getY() - this.getY();
         double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2+d1*d1);
+        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
         distance = d3;
-        boolean action=false;
+        boolean action = false;
         int mobLevel = 1;
 
-        if(this.getHealth()<(this.getMaxHealth()/4)){explosionPower=4;mobLevel = 4;}
-        else if(this.getHealth()<(this.getMaxHealth()/3)){explosionPower=3;mobLevel = 3;}
-        else if(this.getHealth()<(this.getMaxHealth()/2)){explosionPower=2;mobLevel = 2;}
+        if (this.getHealth() < (this.getMaxHealth() / 4)) {
+            explosionPower = 4;
+            mobLevel = 4;
+        } else if (this.getHealth() < (this.getMaxHealth() / 3)) {
+            explosionPower = 3;
+            mobLevel = 3;
+        } else if (this.getHealth() < (this.getMaxHealth() / 2)) {
+            explosionPower = 2;
+            mobLevel = 2;
+        }
 
-        SummonCrows(mobLevel,action);
-        if(this.getHealth()<this.getMaxHealth()/5){Ultimate(p_32141_,mobLevel,action); action=true;}
+        SummonCrows(mobLevel, action);
+        if (this.getHealth() < this.getMaxHealth() / 5) {
+            Ultimate(p_32141_, mobLevel, action);
+            action = true;
+        }
 
 
-        if (action==false) {
+        if (!action) {
             Fireballs(p_32141_);
             if (Barrage > 6) {
                 action = FireBarrage(p_32141_);
@@ -164,54 +179,55 @@ public class Harvester extends Skeleton {
             }
         }
 
-        if (action==false) {Fireballs(p_32141_);
-            Barrage=Barrage+1;
-            Lightning=Lightning+1;
+        if (!action) {
+            Fireballs(p_32141_);
+            Barrage = Barrage + 1;
+            Lightning = Lightning + 1;
         }
     }
 
 
-    private void Ultimate(LivingEntity p_32141_,int mobLevel, boolean action){
-        this.setDeltaMovement(0,1,0);
+    private void Ultimate(LivingEntity p_32141_, int mobLevel, boolean action) {
+        this.setDeltaMovement(0, 1, 0);
         this.setNoGravity(true);
         Boolean test2 = Lighting(p_32141_);
     }
 
 
-    private boolean FireStorm(LivingEntity p_32141_){
+    private boolean FireStorm(LivingEntity p_32141_) {
         double d0 = target.getX() - this.getX();
         double d1 = target.getY() - this.getY();
         double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2+d1*d1);
+        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
         d1 = 4.0D;
         Vec3 vec3 = this.getViewVector(1.0F);
         d2 = p_32141_.getX() - (this.getX() + vec3.x * 4.0D);
         d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
         double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
 
-        for(int x=0 ; x<5*explosionPower;x++) {
+        for (int x = 0; x < 5 * explosionPower; x++) {
             int xran = random.nextInt(20);
             int zran = random.nextInt(20);
 
-            LargeFireball largefireball = new LargeFireball(level, this, d2, d3, d4, this.explosionPower);
-            largefireball.setPos(this.getX() +xran-10 , this.getY()+30, largefireball.getZ() +zran-10);
+            LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
+            largefireball.setPos(this.getX() + xran - 10, this.getY() + 30, largefireball.getZ() + zran - 10);
 
-            largefireball.xPower=0;
-            largefireball.zPower=0;
-            largefireball.yPower=-.5;
-            level.addFreshEntity(largefireball);
+            largefireball.xPower = 0;
+            largefireball.zPower = 0;
+            largefireball.yPower = -.5;
+            level().addFreshEntity(largefireball);
         }
         return true;
 
     }
 
 
-    private boolean FireBarrage(LivingEntity p_32141_){
+    private boolean FireBarrage(LivingEntity p_32141_) {
 
         double d0 = target.getX() - this.getX();
         double d1 = target.getY() - this.getY();
         double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2+d1*d1);
+        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
         d1 = 4.0D;
         d1 = 4.0D;
         Vec3 vec3 = this.getViewVector(1.0F);
@@ -219,24 +235,24 @@ public class Harvester extends Skeleton {
         d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
         double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
 
-        for(int x=0 ; x<explosionPower+2;x++) {
+        for (int x = 0; x < explosionPower + 2; x++) {
             int xran = random.nextInt(3);
             int zran = random.nextInt(3);
             int yran = random.nextInt(3);
 
-            LargeFireball largefireball = new LargeFireball(level, this, d2, d3, d4, this.explosionPower);
-            largefireball.setPos(this.getX() +zran+ vec3.x * 4.0D, this.getY(0.5D) + yran+0.5D, largefireball.getZ() + xran+vec3.z * 4.0D);
-            level.addFreshEntity(largefireball);
+            LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
+            largefireball.setPos(this.getX() + zran + vec3.x * 4.0D, this.getY(0.5D) + yran + 0.5D, largefireball.getZ() + xran + vec3.z * 4.0D);
+            level().addFreshEntity(largefireball);
         }
         return true;
     }
 
-    private boolean Lighting(LivingEntity p_32141_){
+    private boolean Lighting(LivingEntity p_32141_) {
 
         double d0 = target.getX() - this.getX();
         double d1 = target.getY() - this.getY();
         double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2+d1*d1);
+        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
         d1 = 4.0D;
         d1 = 4.0D;
         Vec3 vec3 = this.getViewVector(1.0F);
@@ -244,41 +260,42 @@ public class Harvester extends Skeleton {
         d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
         double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
 
-            LightingBall largefireball = new LightingBall(level, this, d2, d3, d4, this.explosionPower);
-            largefireball.setPos(this.getX() + vec3.x * 4.0D, this.getY(0.5D) +0.5D, largefireball.getZ() +vec3.z * 4.0D);
-            level.addFreshEntity(largefireball);
-             return true;
+        LightingBall largefireball = new LightingBall(level(), this, d2, d3, d4, this.explosionPower);
+        largefireball.setPos(this.getX() + vec3.x * 4.0D, this.getY(0.5D) + 0.5D, largefireball.getZ() + vec3.z * 4.0D);
+        level().addFreshEntity(largefireball);
+        return true;
     }
 
-    private void Fireballs(LivingEntity p_32141_){
+    private void Fireballs(LivingEntity p_32141_) {
         double d0 = target.getX() - this.getX();
         double d1 = target.getY() - this.getY();
         double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2+d1*d1);
-        this.setItemSlot(EquipmentSlot.OFFHAND,new ItemStack(Items.BOW));
+        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
         d1 = 4.0D;
         Vec3 vec3 = this.getViewVector(1.0F);
         d2 = p_32141_.getX() - (this.getX() + vec3.x * 4.0D);
         d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
         double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
-        LargeFireball largefireball = new LargeFireball(level, this, d2, d3, d4, this.explosionPower);
+        LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
         largefireball.setPos(this.getX() + vec3.x * 4.0D, this.getY(0.5D) + 0.5D, this.getZ() + vec3.z * 4.0D);
-        level.addFreshEntity(largefireball);}
+        level().addFreshEntity(largefireball);
+    }
 
-    private void SummonCrows(int mobLevel, boolean action){
+    private void SummonCrows(int mobLevel, boolean action) {
 
-        for(int X=0;X<5*mobLevel;X++){
+        for (int X = 0; X < 5 * mobLevel; X++) {
             EntityType<?> entitytype = MobInit.CROW.get();
             ItemStack itemstack = new ItemStack(Items.WITHER_SKELETON_SPAWN_EGG);
             BlockPos blockpos1;
             BlockPos blockpos = this.blockPosition();
             int xran = random.nextInt(40);
             int zran = random.nextInt(40);
-            blockpos=blockpos.offset(-20+xran,4,-20+zran);
-            Direction direction =this.getDirection();
+            blockpos = blockpos.offset(-20 + xran, 4, -20 + zran);
+            Direction direction = this.getDirection();
             blockpos1 = blockpos.relative(direction);
 
-            entitytype.spawn((ServerLevel)level, itemstack, target.level.getNearestPlayer(this,0),
+            entitytype.spawn((ServerLevel) level(), itemstack, target.level().getNearestPlayer(this, 0),
                     blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1)
                             && direction == Direction.UP);
         }

@@ -94,7 +94,7 @@ public class Farmhand extends Skeleton{
                 blockpos1 = blockpos.relative(direction);
 
 
-                entitytype.spawn((ServerLevel) level, itemstack, target.level.getNearestPlayer(this, 0),
+                entitytype.spawn((ServerLevel) level(), itemstack, target.level().getNearestPlayer(this, 0),
                         blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1)
                                 && direction == Direction.UP);
             }
@@ -162,10 +162,10 @@ public class Farmhand extends Skeleton{
     public boolean doHurtTarget(Entity p_28837_) {
         if (distance < 4) {
            // this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(null));
-            this.level.broadcastEntityEvent(this, (byte) 4);
+            this.level().broadcastEntityEvent(this, (byte) 4);
             float f = AttackDamage;
             float f1 = (int) f > 0 ? f / 2.0F + (float) this.random.nextInt((int) f) : f;
-            boolean flag = p_28837_.hurt(DamageSource.mobAttack(this), f1);
+            boolean flag = p_28837_.hurt(level().damageSources().mobAttack(this), f1);
             if (flag) {
                 p_28837_.setDeltaMovement(p_28837_.getDeltaMovement().add(0.5D, (double) 0.8F, 0.0D));
                 this.doEnchantDamageEffects(this, p_28837_);
@@ -220,9 +220,9 @@ public class Farmhand extends Skeleton{
              d2 = p_32141_.getZ() - this.getZ();
              d3 = Math.sqrt(d0 * d0 + d2 * d2);
             abstractarrow = ((net.minecraft.world.item.BowItem) this.getMainHandItem().getItem()).customArrow(abstractarrow);
-            abstractarrow.shoot(d0, d1 + d3 * (double) 0.2F, d2, 1.6F, (float) (14 - this.level.getDifficulty().getId() * 4));
+            abstractarrow.shoot(d0, d1 + d3 * (double) 0.2F, d2, 1.6F, (float) (14 - this.level().getDifficulty().getId() * 4));
             this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-            this.level.addFreshEntity(abstractarrow);
+            this.level().addFreshEntity(abstractarrow);
         } else {
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack((ItemLike) null));
         }
@@ -258,7 +258,7 @@ public class Farmhand extends Skeleton{
     }
 
     protected boolean teleport() {
-        if (!this.level.isClientSide() && this.isAlive()) {
+        if (!this.level().isClientSide() && this.isAlive()) {
             double d0 = this.getX() + (this.random.nextDouble() - 0.5D) * 64.0D;
             double d1 = this.getY() + (double)(this.random.nextInt(64) - 32);
             double d2 = this.getZ() + (this.random.nextDouble() - 0.5D) * 64.0D;
@@ -271,12 +271,12 @@ public class Farmhand extends Skeleton{
     private boolean teleport(double p_32544_, double p_32545_, double p_32546_) {
         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(p_32544_, p_32545_, p_32546_);
 
-        while(blockpos$mutableblockpos.getY() > this.level.getMinBuildHeight() && !this.level.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion()) {
+        while(blockpos$mutableblockpos.getY() > this.level().getMinBuildHeight() && !this.level().getBlockState(blockpos$mutableblockpos).blocksMotion()) {
             blockpos$mutableblockpos.move(Direction.DOWN);
         }
 
-        BlockState blockstate = this.level.getBlockState(blockpos$mutableblockpos);
-        boolean flag = blockstate.getMaterial().blocksMotion();
+        BlockState blockstate = this.level().getBlockState(blockpos$mutableblockpos);
+        boolean flag = blockstate.blocksMotion();
         boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
         if (flag && !flag1) {
             net.minecraftforge.event.entity.EntityTeleportEvent.EnderEntity event = net.minecraftforge.event.ForgeEventFactory.onEnderTeleport(this, p_32544_, p_32545_, p_32546_);
@@ -284,9 +284,9 @@ public class Farmhand extends Skeleton{
             Vec3 vec3 = this.position();
             boolean flag2 = this.randomTeleport(event.getTargetX(), event.getTargetY(), event.getTargetZ(), true);
             if (flag2) {
-                this.level.gameEvent(GameEvent.TELEPORT, vec3, GameEvent.Context.of(this));
+                this.level().gameEvent(GameEvent.TELEPORT, vec3, GameEvent.Context.of(this));
                 if (!this.isSilent()) {
-                    this.level.playSound((Player)null, this.xo, this.yo, this.zo, SoundEvents.ENDERMAN_TELEPORT, this.getSoundSource(), 1.0F, 1.0F);
+                    this.level().playSound((Player)null, this.xo, this.yo, this.zo, SoundEvents.ENDERMAN_TELEPORT, this.getSoundSource(), 1.0F, 1.0F);
                     this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
                 }
             }

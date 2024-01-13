@@ -24,7 +24,7 @@ public class Scarecrow extends Skeleton {
 
     public boolean active = false;
     public static int MAX_HP = 16;
-    public  int stillVal;
+    public int stillVal;
 
 
 //    @Override
@@ -54,10 +54,10 @@ public class Scarecrow extends Skeleton {
 
     @Override
     public boolean doHurtTarget(Entity p_28837_) {
-        this.level.broadcastEntityEvent(this, (byte)4);
+        this.level().broadcastEntityEvent(this, (byte) 4);
         float f = 3;
-        float f1 = (int)f > 0 ? f / 2.0F + (float)this.random.nextInt((int)f) : f;
-        boolean flag = p_28837_.hurt(DamageSource.mobAttack(this), f1);
+        float f1 = (int) f > 0 ? f / 2.0F + (float) this.random.nextInt((int) f) : f;
+        boolean flag = p_28837_.hurt(level().damageSources().mobAttack(this), f1);
         if (flag) {
             this.doEnchantDamageEffects(this, p_28837_);
         }
@@ -95,19 +95,20 @@ public class Scarecrow extends Skeleton {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource p_33579_) {
-        if(active==true){
-        return SoundEvents.SKELETON_HURT;}
-        else {
+        if (active) {
+            return SoundEvents.SKELETON_HURT;
+        } else {
             stillVal = random.nextInt(10);
             return null;
         }
     }
 
     @Override
-    public int getExperienceReward (){
-        if(this.active==true){
-        return (super.getExperienceReward()*1);}
-        return (super.getExperienceReward()*0);
+    public int getExperienceReward() {
+        if (this.active) {
+            return (super.getExperienceReward());
+        }
+        return (0);
 
     }
 
@@ -115,12 +116,14 @@ public class Scarecrow extends Skeleton {
     @Override
     protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
         super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
-        if(stillVal==1|| active==true){
-        ItemEntity itementity = this.spawnAtLocation(ItemInit.LESSERSOUL.get());
-        if (itementity != null) {
-            itementity.setExtendedLifetime();
-        }}
+        if (stillVal == 1 || active) {
+            ItemEntity itementity = this.spawnAtLocation(ItemInit.LESSERSOUL.get());
+            if (itementity != null) {
+                itementity.setExtendedLifetime();
+            }
+        }
     }
+
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource p_219059_, DifficultyInstance p_219060_) {
         this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.CARVED_PUMPKIN));
@@ -129,8 +132,8 @@ public class Scarecrow extends Skeleton {
 
     }
 
-    Player target=null;
-    int targetdis =12;
+    Player target = null;
+    int targetdis = 12;
 
 
     @Override
@@ -138,32 +141,33 @@ public class Scarecrow extends Skeleton {
         super.tick();
 
 
-        if(level.isNight()==false){
-            targetdis=12;
-            active=false;
+        if (!level().isNight()) {
+            targetdis = 12;
+            active = false;
         }
 
-        if(stillVal==1){active=true; targetdis=12;}
+        if (stillVal == 1) {
+            active = true;
+            targetdis = 12;
+        }
 
-        if(level.isNight()==true||level.isRaining()==true){
-            targetdis=30;
-            active=true;
+        if (level().isNight() || level().isRaining()) {
+            targetdis = 30;
+            active = true;
         }
 
 
-
-
-        if(target!=null){
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2+d1*d1);
-        double distance = d3;
-        if(distance<targetdis&&active==true){
-            this.setNoAi(false);}
-        else{this.setNoAi(true);}
-    }
-        if(level.isNight()==true){this.setNoAi(false);}
+        if (target != null) {
+            double d0 = target.getX() - this.getX();
+            double d1 = target.getY() - this.getY();
+            double d2 = target.getZ() - this.getZ();
+            double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
+            double distance = d3;
+            this.setNoAi(!(distance < targetdis) || !active);
+        }
+        if (level().isNight()) {
+            this.setNoAi(false);
+        }
 
 
     }

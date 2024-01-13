@@ -14,7 +14,7 @@ public class RenderScarecrow extends MobRenderer<Scarecrow,ScarecrowModel<Scarec
 
     public RenderScarecrow(EntityRendererProvider.Context p_174304_) {
         super(p_174304_,new ScarecrowModel<>(p_174304_.bakeLayer(ClientEventSubscriber.SCARECROW_LAYER)),0.25F);
-        this.addLayer(new HumanoidArmorLayer<>(this, new ScarecrowModel<>(p_174304_.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)), new ScarecrowModel(p_174304_.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
+        this.addLayer(new HumanoidArmorLayer<>(this, new ScarecrowModel<>(p_174304_.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)), new ScarecrowModel(p_174304_.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR)), p_174304_.getModelManager()));
 
     }
 

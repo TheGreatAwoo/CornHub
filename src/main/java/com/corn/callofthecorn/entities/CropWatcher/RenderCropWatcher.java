@@ -27,7 +27,7 @@ public class RenderCropWatcher extends HumanoidMobRenderer<CropWatcher, CropWatc
 
     public RenderCropWatcher(EntityRendererProvider.Context p_174382_, ModelLayerLocation p_174383_, ModelLayerLocation p_174384_, ModelLayerLocation p_174385_) {
         super(p_174382_,new CropWatcherModel<>(p_174382_.bakeLayer(ClientEventSubscriber.CROPWATCHER_LAYER)),.3F);
-        this.addLayer(new HumanoidArmorLayer<>(this, new SkeletonModel(p_174382_.bakeLayer(p_174384_)), new SkeletonModel(p_174382_.bakeLayer(p_174385_))));
+        this.addLayer(new HumanoidArmorLayer<>(this, new SkeletonModel(p_174382_.bakeLayer(p_174384_)), new SkeletonModel(p_174382_.bakeLayer(p_174385_)), p_174382_.getModelManager()));
     }
 
 

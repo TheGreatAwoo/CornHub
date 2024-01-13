@@ -18,12 +18,12 @@ import net.minecraftforge.common.extensions.IForgeItem;
 
 import javax.annotation.Nullable;
 
-public class PumpCrown extends ArmorItem implements IForgeItem {
+public class PumpCrown extends CornArmourItem{
     private Multimap<Attribute, AttributeModifier> defaultModifiers;
     private EquipmentSlot CurrentSlot;
     private ArmorMaterial CurrentMaterial;
 
-    public PumpCrown(ArmorMaterial p_40386_, EquipmentSlot p_40387_, Properties p_40388_) {
+    public PumpCrown(ArmorMaterial p_40386_, Type p_40387_, Properties p_40388_) {
         super(p_40386_, p_40387_, p_40388_);
     }
 
@@ -33,7 +33,7 @@ public class PumpCrown extends ArmorItem implements IForgeItem {
     }
 
     @Override
-    public void onArmorTick(ItemStack stack, Level world, Player player) {
+    public void doArmourTick(ItemStack stack, Level world, Player player) {
 
         player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,1),player);
         player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,1),player);
@@ -48,8 +48,6 @@ public class PumpCrown extends ArmorItem implements IForgeItem {
         else return  new ResourceLocation(Main.MOD_ID,"textures/items/pumpcrown.png").toString();
 
     }
-
-
 
     @Override
     public boolean isEnchantable(ItemStack p_41456_) {

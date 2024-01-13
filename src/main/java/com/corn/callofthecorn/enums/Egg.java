@@ -20,11 +20,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import java.util.Objects;
 
 public class Egg extends SpawnEggItem {
-int Types;
+private final int type;
 
-    public Egg(EntityType<? extends Mob> p_43207_, int p_43208_, int p_43209_, Properties p_43210_,int Type) {
+    public Egg(EntityType<? extends Mob> p_43207_, int p_43208_, int p_43209_, Properties p_43210_,int type) {
         super(p_43207_, p_43208_, p_43209_, p_43210_);
-        Types=Type;
+        this.type = type;
     }
 
 @Override
@@ -44,64 +44,41 @@ public InteractionResult useOn(UseOnContext p_43223_) {
             blockpos1 = blockpos.relative(direction);
         }
 
-        EntityType<?> entitytype = null;
-        if (Types == 1) {
-
-            entitytype = MobInit.SCARECROW.get();
-
-
-
-//        if (blockstate.is(Blocks.SPAWNER)) {
-//
-//            BlockEntity blockentity = level.getBlockEntity(blockpos);
-//
-//            if (blockentity instanceof SpawnerBlockEntity) {
-//                BaseSpawner basespawner = ((SpawnerBlockEntity) blockentity).getSpawner();
-//                basespawner.setEntityId(entitytype);
-//                blockentity.setChanged();
-//                level.sendBlockUpdated(blockpos, blockstate, blockstate, 3);
-//                itemstack.shrink(1);
-//                return InteractionResult.CONSUME;
-//            }
-//        }
-
+        EntityType<?> entityType = null;
+        if (type == 1) {
+            entityType = MobInit.SCARECROW.get();
         }
 
-        if(Types==2){
-            entitytype = MobInit.FARMHAND.get();}
-
-        if(Types==3){
-
-          entitytype = MobInit.HARVESTER.get() ;
-
+        if(type ==2){
+            entityType = MobInit.FARMHAND.get();
         }
 
-        if(Types==4){
-            entitytype = MobInit.HARVEST.get();}
+        if(type ==3){
+          entityType = MobInit.HARVESTER.get() ;
+        }
 
-        if(Types==5){
-            entitytype = MobInit.CROPWATCHER.get();}
+        if(type ==4){
+            entityType = MobInit.HARVEST.get();
+        }
 
+        if(type ==5){
+            entityType = MobInit.CROPWATCHER.get();
+        }
 
         if (blockstate.is(Blocks.SPAWNER)) {
-
             BlockEntity blockentity = level.getBlockEntity(blockpos);
-
             if (blockentity instanceof SpawnerBlockEntity) {
-                BaseSpawner basespawner = ((SpawnerBlockEntity) blockentity).getSpawner();
-                basespawner.setEntityId(entitytype);
+                SpawnerBlockEntity spawnerBlockEntity = (SpawnerBlockEntity)blockentity;
+                spawnerBlockEntity.setEntityId(entityType, level.getRandom());
                 blockentity.setChanged();
                 level.sendBlockUpdated(blockpos, blockstate, blockstate, 3);
+                level.gameEvent(p_43223_.getPlayer(), GameEvent.BLOCK_CHANGE, blockpos);
                 itemstack.shrink(1);
                 return InteractionResult.CONSUME;
             }
         }
 
-
-
-
-
-        if (entitytype.spawn((ServerLevel)level, itemstack, p_43223_.getPlayer(), blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
+        if (entityType.spawn((ServerLevel)level, itemstack, p_43223_.getPlayer(), blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
             itemstack.shrink(1);
             level.gameEvent(p_43223_.getPlayer(), GameEvent.ENTITY_PLACE, blockpos);
         }

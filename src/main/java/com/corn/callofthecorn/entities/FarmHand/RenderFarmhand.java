@@ -14,7 +14,7 @@ public class RenderFarmhand extends MobRenderer<Farmhand,FarmhandModel<Farmhand>
 
     public RenderFarmhand(EntityRendererProvider.Context p_174304_) {
         super(p_174304_,new FarmhandModel<>(p_174304_.bakeLayer(ClientEventSubscriber.FARMHAND_LAYER)),0.25F);
-        this.addLayer(new HumanoidArmorLayer<>(this, new FarmhandModel<>(p_174304_.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)), new FarmhandModel(p_174304_.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
+        this.addLayer(new HumanoidArmorLayer<>(this, new FarmhandModel<>(p_174304_.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)), new FarmhandModel(p_174304_.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR)), p_174304_.getModelManager()));
 
     }
 

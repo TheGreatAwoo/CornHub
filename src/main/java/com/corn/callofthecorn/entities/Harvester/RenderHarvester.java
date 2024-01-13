@@ -28,9 +28,9 @@ public class RenderHarvester extends MobRenderer<Harvester,HarvesterModel<Harves
 
 
 
-    public RenderHarvester(EntityRendererProvider.Context p_174382_, ModelLayerLocation p_174383_, ModelLayerLocation p_174384_, ModelLayerLocation p_174385_) {
-        super(p_174382_,new HarvesterModel<>(p_174382_.bakeLayer(ClientEventSubscriber.HARVESTER_LAYER)),.3F);
-        this.addLayer(new HumanoidArmorLayer<>(this, new SkeletonModel(p_174382_.bakeLayer(p_174384_)), new SkeletonModel(p_174382_.bakeLayer(p_174385_))));
+    public RenderHarvester(EntityRendererProvider.Context context, ModelLayerLocation layerLocation, ModelLayerLocation innerLayer, ModelLayerLocation outerLayer) {
+        super(context,new HarvesterModel<>(context.bakeLayer(ClientEventSubscriber.HARVESTER_LAYER)),.3F);
+        this.addLayer(new HumanoidArmorLayer<>(this, new SkeletonModel(context.bakeLayer(innerLayer)), new SkeletonModel(context.bakeLayer(outerLayer)), context.getModelManager()));
     }
 
 

@@ -27,8 +27,9 @@ public class Kernal extends AxeItem {
 
         super(p_40521_, p_40522_, p_40523_, p_40524_);
     }
+
     private Multimap<Attribute, AttributeModifier> defaultModifiers;
-    boolean toddle = false;
+    boolean toddle = false; // TODO this is shared across all kernels, so may lead to odd behaviour
     int Damage = 4;
     Player player;
 
@@ -43,25 +44,24 @@ public class Kernal extends AxeItem {
         Optional<BlockState> optional3 = Optional.empty();
 
 
-        if(player.isCrouching()==false) {
+        if (!player.isCrouching()) {
             Enchant();
         }
 
 
-         if(player.isCrouching()==true||toddle==true){
-            if(toddle==false){toddle=true;}
-            else toddle=false;
+        if (player.isCrouching() || toddle) {
+            toddle = !toddle;
             //player.setInvisible(toddle);
-            double rot =player.getYRot();
-             rot=rot/180*Math.PI;
-             player.knockback(5, Math.sin(rot), -Math.cos(rot));
+            double rot = player.getYRot();
+            rot = rot / 180 * Math.PI;
+            player.knockback(5, Math.sin(rot), -Math.cos(rot));
 
         }
 
 
         if (optional3.isPresent()) {
             if (player instanceof ServerPlayer) {
-                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, blockpos, itemstack);
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer) player, blockpos, itemstack);
             }
 
             level.setBlock(blockpos, optional3.get(), 11);
@@ -77,40 +77,63 @@ public class Kernal extends AxeItem {
         }
     }
 
-    public void Enchant(){
+    public void Enchant() {
 
-        if(player!=null) {
+        if (player != null) {
 
-            LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(player.level);
-            Vec3i Pos = new Vec3i(player.blockPosition().getX(),player.blockPosition().getY()+3,player.blockPosition().getZ());
+            LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(player.level());
+            Vec3i Pos = new Vec3i(player.blockPosition().getX(), player.blockPosition().getY() + 3, player.blockPosition().getZ());
             lightningbolt.moveTo(Vec3.atBottomCenterOf(Pos));
-            player.level.addFreshEntity(lightningbolt);
+            player.level().addFreshEntity(lightningbolt);
 
-            player.addEffect(new MobEffectInstance(MobEffects.GLOWING,100));
+            player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100));
             CalcStack calc = new CalcStack();
             int bonus = calc.CalcCornMetal(player);
 
 
-            if((calc.CalcCornMetal(player)-calc.CalcKernal(player))>0){player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,300));}
-            if((calc.CalcCornMetal(player)-calc.CalcKernal(player))>1){player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING,300));
-                                                                        player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE,300));}
-            if((calc.CalcCornMetal(player)-calc.CalcKernal(player))>2){player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,300));}
-            if((calc.CalcCornMetal(player)-calc.CalcKernal(player))>3){player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,300));}
+            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300));
+            }
+            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 1) {
+                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 300));
+                player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 300));
+            }
+            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 2) {
+                player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 300));
+            }
+            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 3) {
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 300));
+            }
 
-            if((calc.CalcMaize(player)-calc.CalcKernal(player))>0){player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE,300));}
-            if((calc.CalcMaize(player)-calc.CalcKernal(player))>1){player.addEffect(new MobEffectInstance(MobEffects.REGENERATION,300));}
-            if((calc.CalcMaize(player)-calc.CalcKernal(player))>2){player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST,300));}
-            if((calc.CalcMaize(player)-calc.CalcKernal(player))>3){player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,300));}
+            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 300));
+            }
+            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 1) {
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300));
+            }
+            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 2) {
+                player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 300));
+            }
+            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 3) {
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300));
+            }
 
-            if((calc.CalcKernal(player))>0){player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION,300,1));}
-            if((calc.CalcKernal(player))>1){player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION,300,1));}
-            if((calc.CalcKernal(player))>2){player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION,300,1));}
-            if((calc.CalcKernal(player))>3){player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION,300,1));}
+            if ((calc.CalcKernal(player)) > 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
+            }
+            if ((calc.CalcKernal(player)) > 1) {
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
+            }
+            if ((calc.CalcKernal(player)) > 2) {
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
+            }
+            if ((calc.CalcKernal(player)) > 3) {
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
+            }
 
-            player.getCooldowns().addCooldown(this,150);
+            player.getCooldowns().addCooldown(this, 150);
         }
     }
-
 
 
     @Override

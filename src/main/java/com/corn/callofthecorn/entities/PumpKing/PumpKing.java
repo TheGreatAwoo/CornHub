@@ -106,7 +106,7 @@ public class PumpKing extends Witch {
         itementity = this.spawnAtLocation(ItemInit.GREATERSOUL.get());
 
         Random ran = new Random();
-        if(ran.nextInt(5)==5){ itementity = this.spawnAtLocation(ItemInit.PUMPKINGSCROWN.get());}
+        if(ran.nextInt(5)==0){ itementity = this.spawnAtLocation(ItemInit.PUMPKINGSCROWN.get());}
 
 
 
@@ -130,15 +130,15 @@ public class PumpKing extends Witch {
 
 
 protected void Clone()   {
-    if (this.level.isClientSide ) {
+    if (this.level().isClientSide ) {
         double d0 = 0;
         double d1 = 0;
         double d2 = 0;
         float f = this.yBodyRot * ((float)Math.PI / 180F) + Mth.cos((float)this.tickCount * 0.6662F) * 0.25F;
         float f1 = Mth.cos(f);
         float f2 = Mth.sin(f);
-        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double)f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double)f2 * 0.6D, d0, d1, d2);
-        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double)f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double)f2 * 0.6D, d0, d1, d2);
+        this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double)f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double)f2 * 0.6D, d0, d1, d2);
+        this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double)f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double)f2 * 0.6D, d0, d1, d2);
     }
 
     }
@@ -174,15 +174,15 @@ protected void Clone()   {
                 potion = Potions.LONG_WEAKNESS;
             }
 
-            ThrownPotion thrownpotion = new ThrownPotion(this.level, this);
+            ThrownPotion thrownpotion = new ThrownPotion(this.level(), this);
             thrownpotion.setItem(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), potion));
             thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
             thrownpotion.shoot(d0, d1 + d3 * 0.2D, d2, 0.75F, 8.0F);
             if (!this.isSilent()) {
-                this.level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+                this.level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
             }
 
-            this.level.addFreshEntity(thrownpotion);
+            this.level().addFreshEntity(thrownpotion);
         }
 
 
@@ -192,17 +192,17 @@ protected void Clone()   {
 
 
     private void createSpellEntity(double p_32673_, double p_32674_, double p_32675_, double p_32676_, float p_32677_, int p_32678_) {
-        BlockPos blockpos = new BlockPos(p_32673_, p_32676_, p_32674_);
+        BlockPos blockpos = BlockPos.containing(p_32673_, p_32676_, p_32674_);
         boolean flag = false;
         double d0 = 0.0D;
 
         do {
             BlockPos blockpos1 = blockpos.below();
-            BlockState blockstate = this.level.getBlockState(blockpos1);
-            if (blockstate.isFaceSturdy(this.level, blockpos1, Direction.UP)) {
-                if (!this.level.isEmptyBlock(blockpos)) {
-                    BlockState blockstate1 = this.level.getBlockState(blockpos);
-                    VoxelShape voxelshape = blockstate1.getCollisionShape(this.level, blockpos);
+            BlockState blockstate = this.level().getBlockState(blockpos1);
+            if (blockstate.isFaceSturdy(this.level(), blockpos1, Direction.UP)) {
+                if (!this.level().isEmptyBlock(blockpos)) {
+                    BlockState blockstate1 = this.level().getBlockState(blockpos);
+                    VoxelShape voxelshape = blockstate1.getCollisionShape(this.level(), blockpos);
                     if (!voxelshape.isEmpty()) {
                         d0 = voxelshape.max(Direction.Axis.Y);
                     }
@@ -216,7 +216,7 @@ protected void Clone()   {
         } while(blockpos.getY() >= Mth.floor(p_32675_) - 1);
 
         if (flag) {
-            this.level.addFreshEntity(new EvokerFangs(this.level, p_32673_, (double)blockpos.getY() + d0, p_32674_, p_32677_, p_32678_, this));
+            this.level().addFreshEntity(new EvokerFangs(this.level(), p_32673_, (double)blockpos.getY() + d0, p_32674_, p_32677_, p_32678_, this));
         }
 
     }

@@ -45,12 +45,14 @@
     "item.callofthecorn.maizeritestaff":"Maizerite Staff",
     "item.callofthecorn.crowstaff":"Crow Staff",
     "item.callofthecorn.harveststaff":"Harvest Staff",
-    "item.callofthecorn.sythe":"Sythe",
+    "item.callofthecorn.harvesterscythe":"Harvester's Scythe",
     "item.callofthecorn.pitchfork":"Pitchfork",
 
-    "biome.callofthecorn.cornbiome": "Corn Biome",
     "block.callofthecorn.corn_seed":"Corn Seeds",
-    "itemGroup.Corn": "Corn Items",
+
+    "biome.callofthecorn.cornbiome": "Corn Biome",
+
+    "item_group.callofthecorn.corn": "Corn Items",
 
 
     "entity.callofthecorn.scarecrow": "Scarecrow",
