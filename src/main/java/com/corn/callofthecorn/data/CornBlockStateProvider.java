@@ -1,10 +1,9 @@
 package com.corn.callofthecorn.data;
 
-import com.corn.callofthecorn.Init.BlocksInit;
+import com.corn.callofthecorn.init.CornBlocks;
 import com.corn.callofthecorn.Main;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -27,10 +26,10 @@ public class CornBlockStateProvider  extends BlockStateProvider {
 
         // Any block that looks different in the inventory goes in here
         List<Block> differentItemTexture = new Vector<>();
-        differentItemTexture.add(BlocksInit.CORN_SEED.get());
+        differentItemTexture.add(CornBlocks.CORN_SEED.get());
 
         // Add the item models to all registered blocks, except the exceptions above
-        for(Block block : BlocksInit.BLOCKS.getEntries().stream().map(RegistryObject::get).toList()) {
+        for(Block block : CornBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).toList()) {
             String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
             if(differentItemTexture.contains(block)) {
                 continue;

@@ -1,6 +1,6 @@
 package com.corn.callofthecorn;
 
-import com.corn.callofthecorn.Init.*;
+import com.corn.callofthecorn.init.*;
 //import com.example.callofthecorn.enums.BiomeGen;
 import com.corn.callofthecorn.data.CornBlockStateProvider;
 import com.corn.callofthecorn.data.CornFeatureProvider;
@@ -21,15 +21,12 @@ import net.minecraftforge.common.MinecraftForge;
 //import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -92,11 +89,11 @@ public class Main {
     public Main() {
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        MobInit.ENTITY_TYPES.register(bus);
-        bus.addListener(MobInit::registerAttributes);
-        ItemInit.ITEMS.register(bus);
-        BlocksInit.BLOCKS.register(bus);
-        EnchantmentInit.ENCHANTMENTS.register(bus);
+        CornMobs.ENTITY_TYPES.register(bus);
+        bus.addListener(CornMobs::registerAttributes);
+        CornItems.ITEMS.register(bus);
+        CornBlocks.BLOCKS.register(bus);
+        CornEnchantments.ENCHANTMENTS.register(bus);
         CornCreativeTabs.TABS.register(bus);
 
         bus.addListener(this::gatherData);

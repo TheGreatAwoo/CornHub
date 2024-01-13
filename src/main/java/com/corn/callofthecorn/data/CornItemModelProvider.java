@@ -1,6 +1,6 @@
 package com.corn.callofthecorn.data;
 
-import com.corn.callofthecorn.Init.ItemInit;
+import com.corn.callofthecorn.init.CornItems;
 import com.corn.callofthecorn.Main;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -24,13 +24,13 @@ public class CornItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         Set<Item> handheldItems = new HashSet();
         Set<Item> bowItems = new HashSet();
-        for(RegistryObject<Item> registryObject : ItemInit.HANDHELD_ITEMS) {
+        for(RegistryObject<Item> registryObject : CornItems.HANDHELD_ITEMS) {
             handheldItems.add(registryObject.get());
         }
-        for(RegistryObject<Item> registryObject : ItemInit.BOW_ITEMS) {
+        for(RegistryObject<Item> registryObject : CornItems.BOW_ITEMS) {
             bowItems.add(registryObject.get());
         }
-        for(RegistryObject<Item> regOb : ItemInit.ITEMS.getEntries()) {
+        for(RegistryObject<Item> regOb : CornItems.ITEMS.getEntries()) {
             Item item = regOb.get();
             if(item instanceof BlockItem) continue;
             String name = ForgeRegistries.ITEMS.getKey(item).getPath();

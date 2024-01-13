@@ -1,6 +1,6 @@
 package com.corn.callofthecorn.data;
 
-import com.corn.callofthecorn.Init.BlocksInit;
+import com.corn.callofthecorn.init.CornBlocks;
 import com.corn.callofthecorn.Main;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -35,7 +35,7 @@ public class CornFeatureProvider extends DatapackBuiltinEntriesProvider {
                             // Register configured features here
                             bootstrap.register(cfk("cornpatch"),
                                 new ConfiguredFeature<>(Feature.RANDOM_PATCH, new RandomPatchConfiguration(10, 4, 0,
-                                        PlacementUtils.inlinePlaced(Feature.BLOCK_COLUMN, BlockColumnConfiguration.simple(BiasedToBottomInt.of(2, 4), BlockStateProvider.simple(BlocksInit.CORN_SEED.get())),
+                                        PlacementUtils.inlinePlaced(Feature.BLOCK_COLUMN, BlockColumnConfiguration.simple(BiasedToBottomInt.of(2, 4), BlockStateProvider.simple(CornBlocks.CORN_SEED.get())),
                                             BlockPredicateFilter.forPredicate(
                                                 BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE,
                                                         BlockPredicate.matchesTag(new Vec3i(0,-1,0), BlockTags.DIRT)
