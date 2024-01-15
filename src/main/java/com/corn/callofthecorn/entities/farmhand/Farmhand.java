@@ -224,7 +224,7 @@ public class Farmhand extends Skeleton{
             this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
             this.level().addFreshEntity(abstractarrow);
         } else {
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack((ItemLike) null));
+            this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
     }
     @Override
