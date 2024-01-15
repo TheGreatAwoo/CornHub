@@ -34,12 +34,9 @@ public class CornItems {
 	public static final RegistryObject<Item> CORN = ITEMS.register("corn", () -> new Item(defaultitemproperties().food((new FoodProperties.Builder()).nutrition(1).saturationMod(0.5f).build())));
 	public static final RegistryObject<Item> POPCORN = ITEMS.register("popcorn", () -> new Item(defaultitemproperties().food((new FoodProperties.Builder()).nutrition(5).saturationMod(0.8f).build())));
 	public static final RegistryObject<Item> CREAMEDCORN = ITEMS.register("creamedcorn", () -> new CreamedCornItem(defaultitemproperties()));
-	public static final RegistryObject<Item> FARMHANDEGG = ITEMS.register("farmhandegg",() ->  new BossSummonItem(EntityType.MAGMA_CUBE, 9804698, 1973273, (defaultitemproperties()),2));
-	public static final RegistryObject<Item> HEWHOHARVESTSEGG = ITEMS.register("hewhoharvestsegg",() ->new BossSummonItem(EntityType.MAGMA_CUBE, 9804697, 1973272, (defaultitemproperties()),3));
-	public static final RegistryObject<Item> HARVESTEGG = ITEMS.register("harvestegg",() ->new BossSummonItem(EntityType.MAGMA_CUBE, 9804696, 1973271, (defaultitemproperties()),4));
-
-	//public static final RegistryObject<Item> SCARECROWEGG = ITEMS.register("scarecrowegg",() ->new Egg(EntityType.MAGMA_CUBE, 9804695, 1973270, (defaultitemproperties()),1));
-	//public static final RegistryObject<Item> CROPEGG = ITEMS.register("cropegg",() ->new Egg(EntityType.MAGMA_CUBE, 9804695, 1973270, (defaultitemproperties()),5));
+	public static final RegistryObject<Item> FARMHANDEGG = ITEMS.register("farmhandegg",() ->  new BossSummonItem(CornMobs.FARMHAND::get, 9, 3.0, 8, 4, defaultitemproperties()));
+	public static final RegistryObject<Item> HEWHOHARVESTSEGG = ITEMS.register("hewhoharvestsegg",() ->new BossSummonItem(CornMobs.HARVESTER::get, 16,4.0, 10, 5, defaultitemproperties()));
+	public static final RegistryObject<Item> HARVESTEGG = ITEMS.register("harvestegg",() ->new AerialBossSummonItem(CornMobs.HARVEST::get, defaultitemproperties()));
 
 	public static final RegistryObject<Item> LESSERSOUL = ITEMS.register("lessersoul",() -> new Item(defaultitemproperties().fireResistant()));
 	public static final RegistryObject<Item> MILDSOUL = ITEMS.register("mildsoul",() -> new Item(defaultitemproperties().fireResistant()));

@@ -1,89 +1,75 @@
 package com.corn.callofthecorn.items;
 
-import com.corn.callofthecorn.init.CornMobs;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.extensions.IForgeItem;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
-public class BossSummonItem extends SpawnEggItem {
-private final int type;
+public class BossSummonItem extends Item implements IForgeItem {
+    protected final Supplier<EntityType<? extends Mob>> typeSupplier;
+    private final int minSpawnLocations;
+    private final double minDistance;
+    private final int dxz;
+    private final int dy;
 
-    public BossSummonItem(EntityType<? extends Mob> p_43207_, int p_43208_, int p_43209_, Properties p_43210_, int type) {
-        super(p_43207_, p_43208_, p_43209_, p_43210_);
-        this.type = type;
+    public BossSummonItem(Supplier<EntityType<? extends Mob>> typeSupplier, int minSpawnLocations, double minSpawnDistance, int horizontalSpawnDistance, int verticalSpawnDistance, Properties properties) {
+        super(properties);
+        this.typeSupplier = typeSupplier;
+        this.minSpawnLocations = minSpawnLocations;
+        this.minDistance = minSpawnDistance;
+        this.dxz = horizontalSpawnDistance;
+        this.dy = verticalSpawnDistance;
     }
 
-@Override
-public InteractionResult useOn(UseOnContext p_43223_) {
-    Level level = p_43223_.getLevel();
-    if (!(level instanceof ServerLevel)) {
-        return InteractionResult.SUCCESS;
-    } else {
-        ItemStack itemstack = p_43223_.getItemInHand();
-        BlockPos blockpos = p_43223_.getClickedPos();
-        Direction direction = p_43223_.getClickedFace();
-        BlockState blockstate = level.getBlockState(blockpos);
-        BlockPos blockpos1;
-        if (blockstate.getCollisionShape(level, blockpos).isEmpty()) {
-            blockpos1 = blockpos;
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!(level instanceof ServerLevel)) {
+            return InteractionResultHolder.success(stack);
         } else {
-            blockpos1 = blockpos.relative(direction);
-        }
-
-        EntityType<?> entityType = null;
-        if (type == 1) {
-            entityType = CornMobs.SCARECROW.get();
-        }
-
-        if(type ==2){
-            entityType = CornMobs.FARMHAND.get();
-        }
-
-        if(type ==3){
-          entityType = CornMobs.HARVESTER.get() ;
-        }
-
-        if(type ==4){
-            entityType = CornMobs.HARVEST.get();
-        }
-
-        if(type ==5){
-            entityType = CornMobs.CROPWATCHER.get();
-        }
-
-        if (blockstate.is(Blocks.SPAWNER)) {
-            BlockEntity blockentity = level.getBlockEntity(blockpos);
-            if (blockentity instanceof SpawnerBlockEntity) {
-                SpawnerBlockEntity spawnerBlockEntity = (SpawnerBlockEntity)blockentity;
-                spawnerBlockEntity.setEntityId(entityType, level.getRandom());
-                blockentity.setChanged();
-                level.sendBlockUpdated(blockpos, blockstate, blockstate, 3);
-                level.gameEvent(p_43223_.getPlayer(), GameEvent.BLOCK_CHANGE, blockpos);
-                itemstack.shrink(1);
-                return InteractionResult.CONSUME;
+            BlockPos spawnPos = trySpawn((ServerLevel) level, player.getOnPos());
+            if (spawnPos != null) {
+                stack.shrink(1);
+                level.gameEvent(player, GameEvent.ENTITY_PLACE, spawnPos);
             }
+            return InteractionResultHolder.consume(stack);
         }
-
-        if (entityType.spawn((ServerLevel)level, itemstack, p_43223_.getPlayer(), blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
-            itemstack.shrink(1);
-            level.gameEvent(p_43223_.getPlayer(), GameEvent.ENTITY_PLACE, blockpos);
-        }
-        return InteractionResult.CONSUME;
     }
-}
+
+    public BlockPos trySpawn(ServerLevel level, BlockPos centrePos) {
+        List<BlockPos> positions = new ArrayList<>();
+        BlockPos.betweenClosedStream(centrePos.offset(-dxz,-dy,-dxz), centrePos.offset(dxz, dy, dxz)).forEach(pos -> {
+            boolean goodAbove = !level.getBlockState(pos.above()).isSuffocating(level, pos.above());
+            boolean goodHere = !level.getBlockState(pos).isSuffocating(level, pos);
+            boolean goodBelow = level.getBlockState(pos.below()).isSolid();
+            boolean notTooClose = pos.distSqr(centrePos) > minDistance*minDistance;
+            if(goodBelow && goodHere && goodAbove && notTooClose) {
+                positions.add(pos.immutable()); // Can't just add pos or filter the stream because pos is the MutableBlockPos cursor object
+            }
+        });
+        if(positions.size() < minSpawnLocations) { // They like the open air
+            return null;
+        }
+        int idx = level.random.nextInt(positions.size());
+        BlockPos pos = positions.get(idx);
+        if(typeSupplier.get().spawn(level, (ItemStack) null, null, pos, MobSpawnType.SPAWN_EGG, true, false) != null) {
+            return pos;
+        }
+        return null;
+    }
 
 
 }
