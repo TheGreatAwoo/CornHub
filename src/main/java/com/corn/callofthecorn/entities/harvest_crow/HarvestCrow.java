@@ -26,6 +26,7 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.entity.projectile.WitherSkull;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -105,38 +106,17 @@ public class HarvestCrow extends WitherBoss {
     protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
         super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
 
-        int R = new Random().nextInt(3);
-        if (R == 0) {
-            ItemEntity itementity = this.spawnAtLocation(CornItems.KERNAL.get());
+        int r = random.nextInt(3);
+        Item item = switch (r) {
+            case 0 -> CornItems.KERNAL.get();
+            case 1 -> CornItems.CROWSTAFF.get();
+            default -> CornItems.HARVESTSTAFF.get();
+        };
+        ItemEntity itementity = this.spawnAtLocation(item);
+        if (itementity != null) {
+            itementity.setExtendedLifetime();
             itementity.setGlowingTag(true);
             itementity.setInvulnerable(true);
-
-
-            if (itementity != null) {
-                itementity.setExtendedLifetime();
-            }
-        }
-
-        if (R == 1) {
-            ItemEntity itementity = this.spawnAtLocation(CornItems.CROWSTAFF.get());
-            itementity.setGlowingTag(true);
-            itementity.setInvulnerable(true);
-
-
-            if (itementity != null) {
-                itementity.setExtendedLifetime();
-            }
-        }
-
-        if (R == 2) {
-            ItemEntity itementity = this.spawnAtLocation(CornItems.HARVESTSTAFF.get());
-            itementity.setGlowingTag(true);
-            itementity.setInvulnerable(true);
-
-
-            if (itementity != null) {
-                itementity.setExtendedLifetime();
-            }
         }
 
     }

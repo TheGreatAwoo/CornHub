@@ -147,13 +147,11 @@ public class Farmhand extends Skeleton{
     @Override
     protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
         super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
-        ItemEntity itementity = this.spawnAtLocation(CornItems.MILDSOUL.get());
-        itementity.setGlowingTag(true);itementity.setInvulnerable(true);
-        itementity = this.spawnAtLocation(CornItems.MILDSOUL.get());
-        itementity = this.spawnAtLocation(CornItems.MILDSOUL.get());
-        itementity = this.spawnAtLocation(CornItems.MILDSOUL.get());
+
+        ItemEntity itementity = this.spawnAtLocation(CornItems.MILDSOUL.get().getDefaultInstance().copyWithCount(2 + random.nextInt(3)));
         if (itementity != null) {
-            itementity.setExtendedLifetime();
+            itementity.setGlowingTag(true);
+            itementity.setInvulnerable(true);
         }
     }
 

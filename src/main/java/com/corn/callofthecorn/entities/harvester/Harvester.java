@@ -72,21 +72,13 @@ public class Harvester extends Skeleton {
     @Override
     protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
         super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
-        ItemEntity itementity = this.spawnAtLocation(CornItems.GREATERSOUL.get());
+
+        ItemEntity itementity = this.spawnAtLocation(CornItems.GREATERSOUL.get().getDefaultInstance().copyWithCount(2 + random.nextInt(3)));
         itementity.setGlowingTag(true);
         itementity.setInvulnerable(true);
-        itementity = this.spawnAtLocation(CornItems.GREATERSOUL.get());
-        itementity = this.spawnAtLocation(CornItems.GREATERSOUL.get());
-        itementity = this.spawnAtLocation(CornItems.GREATERSOUL.get());
 
-        Random ran = new Random();
-        if (ran.nextInt(5) == 5) {
-            itementity = this.spawnAtLocation(CornItems.HARVESTERSCYTHE.get());
-        }
-
-
-        if (itementity != null) {
-            itementity.setExtendedLifetime();
+        if (random.nextInt(5) == 0) {
+            this.spawnAtLocation(CornItems.HARVESTERSCYTHE.get());
         }
     }
 
