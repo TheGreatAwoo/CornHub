@@ -18,8 +18,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.EvokerFangs;
@@ -56,7 +60,9 @@ public class PumpKing extends Witch {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.goalSelector.addGoal(1, new AvoidEntityGoal(this, Player.class, 6.0F, 1.0, 1.2));
+
     }
 
     @Override
@@ -121,14 +127,12 @@ public class PumpKing extends Witch {
     @Override
     public void performRangedAttack(LivingEntity p_34143_, float p_34144_) {
             Random rand = new Random();
-            int val =rand.nextInt(100);
+            int val =rand.nextInt(4);
             performSpellCasting();
-
-            if(val<25){performSpellCasting2();}
-        if(val>25&&val<75){throwPotion( p_34143_,  p_34144_);}
-        if(val>75&&val<90){performSpellCastingBlind();}
-        if(val>90){Clone() ;}
-}
+            performSpellCasting2();
+            throwPotion( p_34143_,  p_34144_);
+            if(val==1){performSpellCastingBlind();}
+    }
 
 
 protected void Clone()   {
@@ -159,6 +163,8 @@ protected void Clone()   {
             double d1 = p_34143_.getEyeY() - (double) 1.1F - this.getY();
             double d2 = p_34143_.getZ() + vec3.z - this.getZ();
             double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+            Random rand = new Random();
+            int val =rand.nextInt(3);
             Potion potion = Potions.STRONG_HARMING;
             if (p_34143_ instanceof Raider) {
                 if (p_34143_.getHealth() <= 4.0F) {
@@ -168,11 +174,11 @@ protected void Clone()   {
                 }
 
                 this.setTarget((LivingEntity) null);
-            } else if (d3 >= 8.0D && !p_34143_.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
+            } else if (val == 0) {
                 potion = Potions.STRONG_SLOWNESS;
-            } else if (p_34143_.getHealth() >= 8.0F && !p_34143_.hasEffect(MobEffects.POISON)) {
+            } else if  (val == 1) {
                 potion = Potions.STRONG_POISON;
-            } else if (d3 <= 3.0D && !p_34143_.hasEffect(MobEffects.WEAKNESS) && this.random.nextFloat() < 0.25F) {
+            } else if  (val == 2) {
                 potion = Potions.LONG_WEAKNESS;
             }
 
@@ -222,7 +228,6 @@ protected void Clone()   {
         }
 
     }
-
 
     protected void performSpellCasting() {
         if (this.getTarget()!=null) {
