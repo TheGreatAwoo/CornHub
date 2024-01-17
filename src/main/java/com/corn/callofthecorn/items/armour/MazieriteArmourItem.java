@@ -166,8 +166,8 @@ public class MazieriteArmourItem extends CornArmourItem {
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         if (slot == EquipmentSlot.LEGS) {
-            return new ResourceLocation(Main.MOD_ID, "textures/items/maizerite_armor2.png").toString();
-        } else return new ResourceLocation(Main.MOD_ID, "textures/items/maizerite_armor.png").toString();
+            return new ResourceLocation(Main.MOD_ID, "textures/item/maizerite_armor2.png").toString();
+        } else return new ResourceLocation(Main.MOD_ID, "textures/item/maizerite_armor.png").toString();
     }
 
     @Override

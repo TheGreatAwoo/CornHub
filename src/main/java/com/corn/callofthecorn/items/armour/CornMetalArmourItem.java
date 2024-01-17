@@ -148,8 +148,8 @@ public class CornMetalArmourItem extends CornArmourItem {
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 
         if (slot == EquipmentSlot.LEGS) {
-            return new ResourceLocation(Main.MOD_ID, "textures/items/cornmetal2.png").toString();
-        } else return new ResourceLocation(Main.MOD_ID, "textures/items/cornmetal.png").toString();
+            return new ResourceLocation(Main.MOD_ID, "textures/item/cornmetal2.png").toString();
+        } else return new ResourceLocation(Main.MOD_ID, "textures/item/cornmetal.png").toString();
 
     }
 
