@@ -90,35 +90,35 @@ public class KernelItem extends AxeItem {
             lightningbolt.moveTo(Vec3.atBottomCenterOf(Pos));
             player.level().addFreshEntity(lightningbolt);
 
-            player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100));
+            player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 300));
             CalcStack calc = new CalcStack();
             int bonus = calc.CalcCornMetal(player);
 
 
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 0) {
+            if ((calc.CalcCornMetal(player)) > 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300));
             }
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 1) {
+            if ((calc.CalcCornMetal(player)) > 1) {
                 player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 300));
                 player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 300));
             }
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 2) {
+            if ((calc.CalcCornMetal(player)) > 2) {
                 player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 300));
             }
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 3) {
+            if ((calc.CalcCornMetal(player)) > 3) {
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 300));
             }
 
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 0) {
+            if ((calc.CalcMaize(player)) > 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 300));
             }
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 1) {
+            if ((calc.CalcMaize(player)) > 1) {
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300));
             }
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 2) {
+            if ((calc.CalcMaize(player) ) > 2) {
                 player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 300));
             }
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 3) {
+            if ((calc.CalcMaize(player)) > 3) {
                 player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300));
             }
 
