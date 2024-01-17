@@ -174,7 +174,7 @@ public class CornMobs {
                 .add(Attributes.MOVEMENT_SPEED, 0.4)
                 .add(Attributes.FLYING_SPEED,0.8F)
                 .add(Attributes.MAX_HEALTH, Crow.MAX_HP)
-                .add(Attributes.ATTACK_DAMAGE,Crow.Damage)
+                .add(Attributes.ATTACK_DAMAGE,Crow.DAMAGE)
                 .add(Attributes.ATTACK_SPEED,1)
                 .build());
 

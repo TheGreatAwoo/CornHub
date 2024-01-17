@@ -6,12 +6,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Parrot;
-import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.Items;
@@ -20,16 +17,14 @@ import net.minecraft.world.level.Level;
 
 public class Crow extends Parrot {
 
-    public boolean active;
-    public static int MAX_HP = 3;
-    public static int Damage = 4;
+    public static final int MAX_HP = 3;
+    public static final int DAMAGE = 4;
 
-    private int Lifespan = 600;
+    private static final int LIFESPAN = 600;
 
-    public Crow(EntityType<? extends Parrot> p_29362_, Level p_29363_) {
-        super(p_29362_, p_29363_);
-        this.moveControl = new FlyingMoveControl(this, 10, true);
-
+    public Crow(EntityType<? extends Crow> crow, Level level) {
+        super(crow, level);
+        this.entityData.define(REMAINING_LIFETIME, LIFESPAN);
     }
 
     @Override
@@ -44,10 +39,7 @@ public class Crow extends Parrot {
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
     }
 
-    public void setRemainingPersistentAngerTime(int p_30404_) {
-        this.entityData.set(DATA_REMAINING_ANGER_TIME, 10);
-    }
-    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Wolf.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> REMAINING_LIFETIME = SynchedEntityData.defineId(Crow.class, EntityDataSerializers.INT);
 
 
     @Override
@@ -58,20 +50,21 @@ public class Crow extends Parrot {
 
     @Override
     protected void dropCustomDeathLoot(DamageSource p_21385_, int p_21386_, boolean p_21387_) {
-        ItemEntity itementity = this.spawnAtLocation(Items.FEATHER);
-        ItemEntity itementity2 = this.spawnAtLocation(Items.FEATHER);
-        ItemEntity itementity3 = this.spawnAtLocation(Items.CHICKEN);
         super.dropCustomDeathLoot(p_21385_, p_21386_, p_21387_);
+        this.spawnAtLocation(Items.FEATHER.getDefaultInstance().copyWithCount(random.nextInt(3)));
+        this.spawnAtLocation(Items.CHICKEN);
     }
 
 
 
     @Override
     public void tick() {
-        this.moveControl = new FlyingMoveControl(this, 10, true);
         super.tick();
-       Lifespan--;
-       if (Lifespan==0)this.kill();
+        int life = this.entityData.get(REMAINING_LIFETIME);
+        this.entityData.set(REMAINING_LIFETIME, life-1);
+        if (life <= 0) {
+            this.kill();
+        }
     }
 }
 
