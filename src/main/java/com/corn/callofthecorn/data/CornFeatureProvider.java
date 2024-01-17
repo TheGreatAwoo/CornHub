@@ -1,7 +1,7 @@
 package com.corn.callofthecorn.data;
 
-import com.corn.callofthecorn.init.CornBlocks;
 import com.corn.callofthecorn.Main;
+import com.corn.callofthecorn.init.CornBlocks;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;

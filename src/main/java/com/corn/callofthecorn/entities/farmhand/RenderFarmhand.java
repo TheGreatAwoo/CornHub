@@ -1,7 +1,7 @@
 package com.corn.callofthecorn.entities.farmhand;
 
-import com.corn.callofthecorn.Main;
 import com.corn.callofthecorn.ClientEventSubscriber;
+import com.corn.callofthecorn.Main;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

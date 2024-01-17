@@ -1,24 +1,18 @@
 package com.corn.callofthecorn;
 
-import com.corn.callofthecorn.init.*;
-//import com.example.callofthecorn.enums.BiomeGen;
 import com.corn.callofthecorn.data.CornBlockStateProvider;
 import com.corn.callofthecorn.data.CornFeatureProvider;
 import com.corn.callofthecorn.data.CornItemModelProvider;
 import com.corn.callofthecorn.data.CornRecipeProvider;
+import com.corn.callofthecorn.init.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-//import net.minecraft.world.level.levelgen.StructureSettings;
-//import net.minecraft.world.level.levelgen.feature.StructureFeature;
-//import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.common.MinecraftForge;
-//import net.minecraftforge.event.world.BiomeLoadingEvent;
-//import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;

@@ -1,13 +1,12 @@
 package com.corn.callofthecorn.init;
+
+import com.corn.callofthecorn.Main;
+import com.corn.callofthecorn.items.*;
 import com.corn.callofthecorn.items.armour.CornArmourMaterials;
-import com.corn.callofthecorn.items.CornToolTiers;
 import com.corn.callofthecorn.items.armour.CornMetalArmourItem;
 import com.corn.callofthecorn.items.armour.MazieriteArmourItem;
 import com.corn.callofthecorn.items.armour.PumpCrown;
 import com.corn.callofthecorn.items.curios.CrowsFoot;
-import com.corn.callofthecorn.Main;
-import com.corn.callofthecorn.items.*;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;

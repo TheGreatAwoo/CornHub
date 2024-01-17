@@ -1,7 +1,7 @@
 package com.corn.callofthecorn.data;
 
-import com.corn.callofthecorn.init.CornItems;
 import com.corn.callofthecorn.Main;
+import com.corn.callofthecorn.init.CornItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;

@@ -1,5 +1,6 @@
 package com.corn.callofthecorn.entities.harvester;
 
+import com.corn.callofthecorn.entities.LightingBall;
 import com.corn.callofthecorn.init.CornItems;
 import com.corn.callofthecorn.init.CornMobs;
 import net.minecraft.core.BlockPos;
@@ -24,9 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
-import java.util.Random;
-
-import com.corn.callofthecorn.entities.LightingBall;
 
 public class Harvester extends Skeleton {
 

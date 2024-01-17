@@ -1,7 +1,6 @@
 package com.corn.callofthecorn.entities.harvest_crow;
 
 import com.corn.callofthecorn.init.CornItems;
-
 import com.corn.callofthecorn.init.CornMobs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

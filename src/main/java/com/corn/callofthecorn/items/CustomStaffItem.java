@@ -1,15 +1,16 @@
 package com.corn.callofthecorn.items;
 
-import com.corn.callofthecorn.init.CornItems;
 import com.corn.callofthecorn.entities.LightingBall;
+import com.corn.callofthecorn.init.CornItems;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-//import net.minecraftforge.event.world.NoteBlockEvent;
 
 import java.util.function.Predicate;
 

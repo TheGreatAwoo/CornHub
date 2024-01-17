@@ -1,7 +1,7 @@
 package com.corn.callofthecorn.data;
 
-import com.corn.callofthecorn.init.CornBlocks;
 import com.corn.callofthecorn.Main;
+import com.corn.callofthecorn.init.CornBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;

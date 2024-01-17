@@ -1,7 +1,7 @@
 package com.corn.callofthecorn.entities.harvester;
 
-import com.corn.callofthecorn.Main;
 import com.corn.callofthecorn.ClientEventSubscriber;
+import com.corn.callofthecorn.Main;
 import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
