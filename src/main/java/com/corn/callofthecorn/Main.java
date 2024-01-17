@@ -1,9 +1,6 @@
 package com.corn.callofthecorn;
 
-import com.corn.callofthecorn.data.CornBlockStateProvider;
-import com.corn.callofthecorn.data.CornFeatureProvider;
-import com.corn.callofthecorn.data.CornItemModelProvider;
-import com.corn.callofthecorn.data.CornRecipeProvider;
+import com.corn.callofthecorn.data.*;
 import com.corn.callofthecorn.init.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -108,9 +105,9 @@ public class Main {
         generator.addProvider(event.includeClient(), new CornItemModelProvider(generator, helper));
         generator.addProvider(event.includeClient(), new CornBlockStateProvider(generator, helper));
 
-//        CornBlockTagProvider blocktags = new CornBlockTagProvider(generator, provider, helper);
-//        generator.addProvider(event.includeServer(), blocktags);
-//        generator.addProvider(event.includeServer(), new CornItemTagProvider(generator, provider, blocktags.contentsGetter(), helper));
+        CornBlockTagProvider blocktags = new CornBlockTagProvider(generator, provider, helper);
+        generator.addProvider(event.includeServer(), blocktags);
+        generator.addProvider(event.includeServer(), new CornItemTagProvider(generator, provider, blocktags.contentsGetter(), helper));
         generator.addProvider(event.includeServer(), new CornRecipeProvider(out, provider));
 //        generator.addProvider(event.includeServer(), new CornLootTableProvider(out));
         generator.addProvider(event.includeServer(), new CornFeatureProvider(out, provider));
