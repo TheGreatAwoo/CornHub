@@ -12,4 +12,7 @@ public class CrowsFoot extends  CornCurios{
         super.tickCurio(ctx);
 
     }
+
+
+
 }

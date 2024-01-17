@@ -91,7 +91,7 @@ public class KernelItem extends AxeItem {
             lightningbolt.moveTo(Vec3.atBottomCenterOf(Pos));
             player.level().addFreshEntity(lightningbolt);
 
-            player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100));
+            player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 300));
             int c = CalcStack.getSetBonus(player, CornTags.Items.CORNMETAL_SET_ITEMS);
             int m = CalcStack.getSetBonus(player, CornTags.Items.MAIZERITE_SET_ITEMS);
             int k = CalcStack.getSetBonus(player, CornTags.Items.KERNEL_SET_ITEMS);
