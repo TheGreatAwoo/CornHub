@@ -1,6 +1,7 @@
 package com.corn.callofthecorn.items.armour;
 
 import com.corn.callofthecorn.Main;
+import com.corn.callofthecorn.data.CornTags;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.nbt.CompoundTag;
@@ -64,8 +65,7 @@ public class CornMetalArmourItem extends CornArmourItem {
         l.clear();
         stack.setTag(tag);
 
-        CalcStack calc = new CalcStack();
-        Setbonus = calc.CalcCornMetal(player);
+        Setbonus = CalcStack.getSetBonus(player, CornTags.Items.CORNMETAL_SET_ITEMS);
 
 
         if (!appliedBonus) {

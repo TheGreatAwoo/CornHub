@@ -32,6 +32,8 @@ public class CornItemTagProvider extends ItemTagsProvider {
         this.tag(CornTags.Items.MAIZERITE_SET_ITEMS).add(CornItems.MAIZERITEFEET.get());
         this.tag(CornTags.Items.MAIZERITE_SET_ITEMS).add(CornItems.PUMPKINGSCROWN.get());
 
+        this.tag(CornTags.Items.KERNEL_SET_ITEMS).add(CornItems.PUMPKINGSCROWN.get());
+
         this.tag(ItemTags.SWORDS).add(CornItems.CORNMETALSWORD.get());
         this.tag(ItemTags.SWORDS).add(CornItems.MAIZERITESWORD.get());
 

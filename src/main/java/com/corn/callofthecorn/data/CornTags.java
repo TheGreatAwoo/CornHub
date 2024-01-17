@@ -20,6 +20,7 @@ public class CornTags {
         public static class Items {
             public static final TagKey<Item> CORNMETAL_SET_ITEMS = tag("cornmetal_set_items");
             public static final TagKey<Item> MAIZERITE_SET_ITEMS = tag("maizerite_set_items");
+            public static final TagKey<Item> KERNEL_SET_ITEMS = tag("kernel_set_items");
 
             public static final TagKey<Item> RINGS = curioTag("ring");
             public static final TagKey<Item> CHARMS = curioTag("charm");

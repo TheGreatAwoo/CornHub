@@ -1,5 +1,6 @@
 package com.corn.callofthecorn.items;
 
+import com.corn.callofthecorn.data.CornTags;
 import com.corn.callofthecorn.items.armour.CalcStack;
 import com.google.common.collect.Multimap;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -91,48 +92,40 @@ public class KernelItem extends AxeItem {
             player.level().addFreshEntity(lightningbolt);
 
             player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100));
-            CalcStack calc = new CalcStack();
-            int bonus = calc.CalcCornMetal(player);
+            int c = CalcStack.getSetBonus(player, CornTags.Items.CORNMETAL_SET_ITEMS);
+            int m = CalcStack.getSetBonus(player, CornTags.Items.MAIZERITE_SET_ITEMS);
+            int k = CalcStack.getSetBonus(player, CornTags.Items.KERNEL_SET_ITEMS);
 
 
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 0) {
+            if (c > 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300));
             }
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 1) {
+            if (c > 1) {
                 player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 300));
                 player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 300));
             }
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 2) {
+            if (c > 2) {
                 player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 300));
             }
-            if ((calc.CalcCornMetal(player) - calc.CalcKernal(player)) > 3) {
+            if (c > 3) {
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 300));
             }
 
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 0) {
+            if (m > 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 300));
             }
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 1) {
+            if (m > 1) {
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300));
             }
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 2) {
+            if (m > 2) {
                 player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 300));
             }
-            if ((calc.CalcMaize(player) - calc.CalcKernal(player)) > 3) {
+            if (m > 3) {
                 player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300));
             }
 
-            if ((calc.CalcKernal(player)) > 0) {
-                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
-            }
-            if ((calc.CalcKernal(player)) > 1) {
-                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
-            }
-            if ((calc.CalcKernal(player)) > 2) {
-                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
-            }
-            if ((calc.CalcKernal(player)) > 3) {
-                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 1));
+            if (k > 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, k));
             }
 
             player.getCooldowns().addCooldown(this, 150);
