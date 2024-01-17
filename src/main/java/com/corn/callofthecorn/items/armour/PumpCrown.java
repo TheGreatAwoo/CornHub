@@ -41,9 +41,9 @@ public class PumpCrown extends CornArmourItem{
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 
-        if(slot==EquipmentSlot.LEGS){return  new ResourceLocation(Main.MOD_ID,"textures/items/cornmetal2.png").toString();}
+        if(slot==EquipmentSlot.LEGS){return  new ResourceLocation(Main.MOD_ID,"textures/item/cornmetal2.png").toString();}
 
-        else return  new ResourceLocation(Main.MOD_ID,"textures/items/pumpcrown.png").toString();
+        else return  new ResourceLocation(Main.MOD_ID,"textures/item/pumpcrown.png").toString();
 
     }
 
