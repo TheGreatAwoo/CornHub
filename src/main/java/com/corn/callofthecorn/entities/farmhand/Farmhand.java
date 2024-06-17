@@ -70,8 +70,7 @@ public class Farmhand extends Skeleton{
 
     @Override
     public int getExperienceReward (){
-        return (super.getExperienceReward()*30);
-
+        return 20;
     }
 
     public float LastHp = this.getMaxHealth();
