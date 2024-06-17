@@ -53,7 +53,7 @@ public class CornMobs {
     public static final RegistryObject<EntityType<Harvester>> HARVESTER = ENTITY_TYPES.register("harvester",
             () -> EntityType.Builder.<Harvester>of(Harvester::new, MobCategory.MONSTER)
                     .sized(EntityType.SKELETON.getWidth(), EntityType.SKELETON.getHeight())
-                    .setTrackingRange(50)
+                    .setTrackingRange(60)
                     .fireImmune()
                     //  .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)

@@ -9,43 +9,50 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 
-public class Harvester extends Skeleton {
+public class Harvester extends AbstractSkeleton {
 
-    public static int MAX_HP = 300;
-    public static int AttackDamage = 10;
-    public LivingEntity target;
-    public double distance;
-    private int explosionPower = 1;
+    public static final int MAX_HP = 300;
+    public static final int AttackDamage = 10;
+    private int barrageTracker = 0;
+    private int lightningTracker = 0;
+    private int crowTracker = 10;
+    private boolean hasUlted = false;
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
-
-//
-//    @Nullable
-//    @Override
-//    public Team getTeam() {
-//        return Main.CTeam;
-//    }
-
 
     @Override
     public int getExperienceReward() {
-        return (super.getExperienceReward() * 120);
+        return 120;
     }
 
     @Override
@@ -60,11 +67,28 @@ public class Harvester extends Skeleton {
         this.bossEvent.removePlayer(p_31488_);
     }
 
-
     public Harvester(EntityType<? extends Harvester> type, Level level) {
         super(type, level);
         this.canSpawnSprintParticle();
+        this.setCanPickUpLoot(false);
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+    }
+
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(4, new HarvesterAttackGoal<>(this, 1.5D, 60, 25.0F));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
+    }
+
+    @Override
+    public void reassessWeaponGoal() {
+
     }
 
     @Override
@@ -83,31 +107,6 @@ public class Harvester extends Skeleton {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource p_219059_, DifficultyInstance p_219060_) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(CornItems.HARVESTERSCYTHE.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
-
-    }
-
-
-    @Override
-    public boolean doHurtTarget(Entity target) {
-        if (distance < 1) {
-            this.level().broadcastEntityEvent(this, (byte) 4);
-            float f = AttackDamage;
-            float f1 = (int) f > 0 ? f / 2.0F + (float) this.random.nextInt((int) f) : f;
-            boolean flag = target.hurt(level().damageSources().mobAttack(this), f1);
-            if (flag) {
-                target.setDeltaMovement(target.getDeltaMovement().add(5F, 0.0F, 0.0D));
-                this.doEnchantDamageEffects(this, target);
-                this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
-
-            }
-
-            return flag;
-        } else {
-            this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
-            return false;
-        }
-
     }
 
 
@@ -115,181 +114,125 @@ public class Harvester extends Skeleton {
     public void tick() {
         super.tick();
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
-        this.level().addParticle(ParticleTypes.DRAGON_BREATH, this.getX() + this.random.nextGaussian(), this.getY() + (double) (this.random.nextFloat() * 3.3F), this.getZ() + this.random.nextGaussian(), 0.7F, 0.7F, 0.9F);
+        this.level().addParticle(ParticleTypes.DRAGON_BREATH, this.getX() + this.random.nextGaussian(), this.getY(), this.getZ() + this.random.nextGaussian(), this.random.nextGaussian(), 0.7F, this.random.nextGaussian());
         this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE));
     }
 
-    int Barrage = 0;
-    int Lightning = 0;
-
-
     @Override
-    public void performRangedAttack(LivingEntity p_32141_, float p_32142_) {
+    public boolean hurt(DamageSource src, float amount) {
+        if(src.is(DamageTypeTags.IS_EXPLOSION)) {
+            return false;
+        }
+        return super.hurt(src, amount);
+    }
 
-        target = p_32141_;
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
-        distance = d3;
-        boolean action = false;
-        int mobLevel = 1;
+    public void castSpell(LivingEntity target, boolean canSeeTarget) {
+        int bossStage = 1;
 
         if (this.getHealth() < (this.getMaxHealth() / 4)) {
-            explosionPower = 4;
-            mobLevel = 4;
+            bossStage = 4;
         } else if (this.getHealth() < (this.getMaxHealth() / 3)) {
-            explosionPower = 3;
-            mobLevel = 3;
+            bossStage = 3;
         } else if (this.getHealth() < (this.getMaxHealth() / 2)) {
-            explosionPower = 2;
-            mobLevel = 2;
+            bossStage = 2;
         }
 
-        SummonCrows(mobLevel, action);
-        if (this.getHealth() < this.getMaxHealth() / 5) {
-            Ultimate(p_32141_, mobLevel, action);
-            action = true;
+        if (bossStage == 4 && !hasUlted) {
+            summonCrows(bossStage+2);
+            castUltimate(target, bossStage);
+            hasUlted = true;
+        } else if (barrageTracker > 6) {
+            castFireBarrage(target, bossStage);
+            barrageTracker = 0;
+        } else if (lightningTracker > 5) {
+            castLighting(target, bossStage);
+            lightningTracker = 0;
+        } else if (distanceTo(target) < 3 + bossStage) {
+            castFireStorm(target, bossStage);
+        } else {
+            castFireballs(target, bossStage);
         }
+        barrageTracker++;
+        lightningTracker++;
+        crowTracker++;
 
-
-        if (!action) {
-            Fireballs(p_32141_);
-            if (Barrage > 6) {
-                action = FireBarrage(p_32141_);
-                Barrage = 0;
-            }
-            if (Lightning > 5) {
-                action = Lighting(p_32141_);
-                Lightning = 0;
-            }
-            if (distance < 5) {
-                action = FireStorm(p_32141_);
-            }
-        }
-
-        if (!action) {
-            Fireballs(p_32141_);
-            Barrage = Barrage + 1;
-            Lightning = Lightning + 1;
+        if (crowTracker > 6) {
+            summonCrows(bossStage);
+            crowTracker = 0;
         }
     }
 
-
-    private void Ultimate(LivingEntity p_32141_, int mobLevel, boolean action) {
-        this.setDeltaMovement(0, 1, 0);
+    private void castUltimate(LivingEntity target, int bossStage) {
+        this.setDeltaMovement(0, .5, 0);
         this.setNoGravity(true);
-        Boolean test2 = Lighting(p_32141_);
+        castLighting(target, bossStage);
     }
 
+    private void castFireStorm(LivingEntity target, int bossStage) {
+        boolean sky = level().canSeeSky(this.blockPosition());
+        for (int i = 0; i < 5 * bossStage; i++) {
+            int xran = random.nextInt(10 + 2*bossStage) - 5 - bossStage;
+            int zran = random.nextInt(10 + 2*bossStage) - 5 - bossStage;
+            int yoff = sky ? 30 : 10;
 
-    private boolean FireStorm(LivingEntity p_32141_) {
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
-        d1 = 4.0D;
-        Vec3 vec3 = this.getViewVector(1.0F);
-        d2 = p_32141_.getX() - (this.getX() + vec3.x * 4.0D);
-        d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
-        double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
-
-        for (int x = 0; x < 5 * explosionPower; x++) {
-            int xran = random.nextInt(20);
-            int zran = random.nextInt(20);
-
-            LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
-            largefireball.setPos(this.getX() + xran - 10, this.getY() + 30, largefireball.getZ() + zran - 10);
+            LargeFireball largefireball = new LargeFireball(level(), this, 0,-1,0, bossStage);
+            largefireball.setPos(this.getX() + xran, this.getY() + yoff, largefireball.getZ() + zran);
 
             largefireball.xPower = 0;
             largefireball.zPower = 0;
-            largefireball.yPower = -.5;
+            largefireball.yPower = -0.3 - random.nextFloat()*.2;
             level().addFreshEntity(largefireball);
         }
-        return true;
-
     }
 
 
-    private boolean FireBarrage(LivingEntity p_32141_) {
+    private void castFireBarrage(LivingEntity target, int bossStage) {
+        Vec3 viewVector = this.getViewVector(1.0F);
+        Vec3 castPos = this.getPosition(1.f).add(viewVector.scale(3));
+        Vec3 delta = target.getEyePosition().subtract(castPos);
 
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
-        d1 = 4.0D;
-        d1 = 4.0D;
-        Vec3 vec3 = this.getViewVector(1.0F);
-        d2 = p_32141_.getX() - (this.getX() + vec3.x * 4.0D);
-        d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
-        double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
-
-        for (int x = 0; x < explosionPower + 2; x++) {
-            int xran = random.nextInt(3);
-            int zran = random.nextInt(3);
-            int yran = random.nextInt(3);
-
-            LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
-            largefireball.setPos(this.getX() + zran + vec3.x * 4.0D, this.getY(0.5D) + yran + 0.5D, largefireball.getZ() + xran + vec3.z * 4.0D);
-            level().addFreshEntity(largefireball);
+        for (int i = 0; i < bossStage + 2; i++) {
+            Vec3 offset = new Vec3(random.nextFloat() - 0.5, random.nextFloat() - 0.5, random.nextFloat() - 0.5).scale(5);
+            LargeFireball ball = new LargeFireball(level(), this, delta.x, delta.y, delta.z, bossStage);
+            ball.setPos(castPos.add(offset));
+            level().addFreshEntity(ball);
         }
-        return true;
     }
 
-    private boolean Lighting(LivingEntity p_32141_) {
-
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
-        d1 = 4.0D;
-        d1 = 4.0D;
-        Vec3 vec3 = this.getViewVector(1.0F);
-        d2 = p_32141_.getX() - (this.getX() + vec3.x * 4.0D);
-        d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
-        double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
-
-        LightingBall largefireball = new LightingBall(level(), this, d2, d3, d4, this.explosionPower);
-        largefireball.setPos(this.getX() + vec3.x * 4.0D, this.getY(0.5D) + 0.5D, largefireball.getZ() + vec3.z * 4.0D);
-        level().addFreshEntity(largefireball);
-        return true;
+    private void castLighting(LivingEntity target, int bossStage) {
+        Vec3 viewVector = this.getViewVector(1.0F);
+        Vec3 castPos = this.getPosition(1.f).add(viewVector.scale(3));
+        Vec3 delta = target.getEyePosition().subtract(castPos);
+        LightingBall ball = new LightingBall(level(), this, delta.x, delta.y, delta.z, bossStage);
+        ball.setPos(castPos);
+        level().addFreshEntity(ball);
     }
 
-    private void Fireballs(LivingEntity p_32141_) {
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.BOW));
-        d1 = 4.0D;
-        Vec3 vec3 = this.getViewVector(1.0F);
-        d2 = p_32141_.getX() - (this.getX() + vec3.x * 4.0D);
-        d3 = p_32141_.getY(0.5D) - (0.5D + this.getY(0.5D));
-        double d4 = p_32141_.getZ() - (this.getZ() + vec3.z * 4.0D);
-        LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
-        largefireball.setPos(this.getX() + vec3.x * 4.0D, this.getY(0.5D) + 0.5D, this.getZ() + vec3.z * 4.0D);
-        level().addFreshEntity(largefireball);
+    private void castFireballs(LivingEntity target, int bossStage) {
+        Vec3 viewVector = this.getViewVector(1.0F);
+        Vec3 castPos = this.getPosition(1.f).add(viewVector.scale(3));
+        Vec3 delta = target.getEyePosition().subtract(castPos);
+        LargeFireball ball = new LargeFireball(level(), this, delta.x, delta.y, delta.z, bossStage);
+        ball.setPos(castPos);
+        level().addFreshEntity(ball);
     }
 
-    private void SummonCrows(int mobLevel, boolean action) {
-
-        for (int X = 0; X < 5 * mobLevel; X++) {
+    private void summonCrows(int bossStage) {
+        for (int i = 0; i < 10 * bossStage; i++) {
             EntityType<?> entitytype = CornMobs.CROW.get();
-            ItemStack itemstack = new ItemStack(Items.WITHER_SKELETON_SPAWN_EGG);
-            BlockPos blockpos1;
-            BlockPos blockpos = this.blockPosition();
             int xran = random.nextInt(40);
             int zran = random.nextInt(40);
-            blockpos = blockpos.offset(-20 + xran, 4, -20 + zran);
-            Direction direction = this.getDirection();
-            blockpos1 = blockpos.relative(direction);
-
-            entitytype.spawn((ServerLevel) level(), itemstack, target.level().getNearestPlayer(this, 0),
-                    blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1)
-                            && direction == Direction.UP);
+            BlockPos spawnPos = this.blockPosition().offset(-20 + xran, 4, -20 + zran);
+            if(xran*xran + zran*zran > 16 && level().isEmptyBlock(spawnPos)) {
+                entitytype.spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
+            }
         }
     }
 
+    @Override
+    protected SoundEvent getStepSound() {
+        return SoundEvents.SKELETON_STEP;
+    }
 
 }
 
