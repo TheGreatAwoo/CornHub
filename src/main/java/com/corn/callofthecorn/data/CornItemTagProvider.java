@@ -25,6 +25,7 @@ public class CornItemTagProvider extends ItemTagsProvider {
         this.tag(CornTags.Items.CORNMETAL_SET_ITEMS).add(CornItems.CORNMETALPANTS.get());
         this.tag(CornTags.Items.CORNMETAL_SET_ITEMS).add(CornItems.CORNMETALFEET.get());
         this.tag(CornTags.Items.CORNMETAL_SET_ITEMS).add(CornItems.PUMPKINGSCROWN.get());
+        this.tag(CornTags.Items.CORNMETAL_SET_ITEMS).add(CornItems.CROWSFOOT.get());
 
         this.tag(CornTags.Items.MAIZERITE_SET_ITEMS).add(CornItems.MAIZERITEHEAD.get());
         this.tag(CornTags.Items.MAIZERITE_SET_ITEMS).add(CornItems.MAIZERITECHEST.get());
@@ -50,7 +51,7 @@ public class CornItemTagProvider extends ItemTagsProvider {
         this.tag(ItemTags.HOES).add(CornItems.CORNMETALHOE.get());
         this.tag(ItemTags.HOES).add(CornItems.MAIZERITEHOE.get());
 
-        this.tag(CornTags.Items.CHARMS).add(CornItems.CROWSFOOT.get());
+        this.tag(CornTags.Items.NECKLACES).add(CornItems.CROWSFOOT.get());
 
     }
 }

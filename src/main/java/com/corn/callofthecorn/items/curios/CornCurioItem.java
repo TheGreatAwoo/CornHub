@@ -20,8 +20,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class ModCurioItem extends Item {
-    public ModCurioItem(Properties props) {
+public class CornCurioItem extends Item {
+    public CornCurioItem(Properties props) {
         super(props);
     }
 
@@ -53,7 +53,7 @@ public class ModCurioItem extends Item {
 
                 @Override
                 public void onEquip(SlotContext ctx, ItemStack newStack) {
-                    ModCurioItem.this.onEquipCurio(ctx);
+                    CornCurioItem.this.onEquipCurio(ctx);
                 }
 
                 @Nonnull
@@ -63,7 +63,7 @@ public class ModCurioItem extends Item {
                 }
                 @Override
                 public void onUnequip(SlotContext ctx, ItemStack prevStack) {
-                    ModCurioItem.this.onUnequipCurio(ctx);
+                    CornCurioItem.this.onUnequipCurio(ctx);
                 }
 
                 @Override
@@ -73,7 +73,7 @@ public class ModCurioItem extends Item {
 
                 @Override
                 public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid) {
-                    return ModCurioItem.this.getCurioAttributes(slotContext, uuid);
+                    return CornCurioItem.this.getCurioAttributes(slotContext, uuid);
                 }
 
             });

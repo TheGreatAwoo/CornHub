@@ -1,18 +1,26 @@
 package com.corn.callofthecorn.items.curios;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import top.theillusivec4.curios.api.SlotContext;
 
-public class CrowsFoot extends  CornCurios{
+import java.util.UUID;
+
+public class CrowsFoot extends CornCurioItem {
+
     public CrowsFoot(Properties props) {
         super(props);
     }
 
     @Override
-    public void tickCurio(SlotContext ctx) {
-        super.tickCurio(ctx);
-
+    public Multimap<Attribute, AttributeModifier> getCurioAttributes(SlotContext ctx, UUID uuid) {
+        Multimap<Attribute, AttributeModifier> modifiers = HashMultimap.create();
+        modifiers.put(Attributes.LUCK, new AttributeModifier(uuid, "Luck", -1, AttributeModifier.Operation.ADDITION));
+        return modifiers;
     }
-
 
 
 }

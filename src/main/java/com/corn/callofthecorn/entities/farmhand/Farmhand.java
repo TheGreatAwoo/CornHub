@@ -152,6 +152,13 @@ public class Farmhand extends Skeleton{
             itementity.setGlowingTag(true);
             itementity.setInvulnerable(true);
         }
+        if(random.nextInt(10) == 0) {
+            ItemEntity foot = this.spawnAtLocation(CornItems.CROWSFOOT.get());
+            if (foot != null) {
+                foot.setGlowingTag(true);
+                foot.setInvulnerable(true);
+            }
+        }
     }
 
 
