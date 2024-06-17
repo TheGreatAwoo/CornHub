@@ -23,8 +23,8 @@ public class CornItems {
 	public static final RegistryObject<Item> CROWSFOOT = ITEMS.register("crowsfoot",() -> new CrowsFoot(defaultitemproperties().fireResistant()));
 
 	public static final RegistryObject<Item> KERNAL = ITEMS.register("kernal",() -> new KernelItem(CornToolTiers.KERNALRITE,3,-2F,defaultitemproperties().fireResistant()));
-	public static final RegistryObject<Item> CROWSTAFF = ITEMS.register("crowstaff", () -> new CustomStaffItem(defaultitemproperties().fireResistant(),4,false));
-	public static final RegistryObject<Item> HARVESTSTAFF = ITEMS.register("harveststaff", () -> new CustomStaffItem(defaultitemproperties().fireResistant(),0,true));
+	public static final RegistryObject<Item> CROWSTAFF = ITEMS.register("crowstaff", () -> new CustomStaffItem(defaultitemproperties().fireResistant(),4,false, CornItems.MILDSOUL));
+	public static final RegistryObject<Item> HARVESTSTAFF = ITEMS.register("harveststaff", () -> new CustomStaffItem(defaultitemproperties().fireResistant(),0,true, CornItems.MILDSOUL));
 	public static final RegistryObject<Item> PUMPKINGSCROWN = ITEMS.register("pumpkingscrown",() -> new PumpCrown(CornArmourMaterials.PUMPKIN, ArmorItem.Type.HELMET, defaultitemproperties()));
 	public static final RegistryObject<Item> HARVESTERSCYTHE = ITEMS.register("harvesterscythe",() -> new HarvesterScytheItem(CornToolTiers.KERNALRITE,3,-2.4F,defaultitemproperties()));
 	//public static final RegistryObject<Item> PITCHFORK = ITEMS.register("pitchfork",() -> new Pitchfork(defaultitemproperties()));
@@ -43,7 +43,7 @@ public class CornItems {
 	public static final RegistryObject<Item> CORNSOUL = ITEMS.register("cornsoul", () ->  new Item(defaultitemproperties().fireResistant()));
 
 
-	public static final RegistryObject<Item> CORNSTAFF = ITEMS.register("cornstaff",() -> new CustomStaffItem(defaultitemproperties(),1,false));
+	public static final RegistryObject<Item> CORNSTAFF = ITEMS.register("cornstaff",() -> new CustomStaffItem(defaultitemproperties(),1,false, CornItems.LESSERSOUL));
 	public static final RegistryObject<Item> CORNMETALBAR = ITEMS.register("cornmetalbar",() -> new Item(defaultitemproperties()));
 	public static final RegistryObject<Item> CORNMETALPANTS = ITEMS.register("cornmetalpants",() -> new CornMetalArmourItem(CornArmourMaterials.CORNMETAL, ArmorItem.Type.LEGGINGS, defaultitemproperties()));
 	public static final RegistryObject<Item> CORNMETALHEAD = ITEMS.register("cornmetalhead",() -> new CornMetalArmourItem(CornArmourMaterials.CORNMETAL, ArmorItem.Type.HELMET, defaultitemproperties()));
@@ -55,7 +55,7 @@ public class CornItems {
 	public static final RegistryObject<Item> CORNMETALSWORD = ITEMS.register("cornmetalsword",() -> new CustomSwordItem(CornToolTiers.CORNMETAL,3,-1F,defaultitemproperties()));
 	public static final RegistryObject<Item> CORNMETALSHOVEL = ITEMS.register("cornmetalshovel",() -> new CustomShovelItem(CornToolTiers.CORNMETAL,1.5F,-2F,defaultitemproperties()));
 	public static final RegistryObject<Item> CORNMETALBOW = ITEMS.register("cornmetalbow",() -> new CustomBowItem(defaultitemproperties(),35,4,3,false));
-	public static final RegistryObject<Item> CORNMETALSTAFF = ITEMS.register("cornmetalstaff",() -> new CustomStaffItem(defaultitemproperties(),2,false));
+	public static final RegistryObject<Item> CORNMETALSTAFF = ITEMS.register("cornmetalstaff",() -> new CustomStaffItem(defaultitemproperties(),2,false, CornItems.LESSERSOUL));
 
 
 	public static final RegistryObject<Item> MAIZERITE = ITEMS.register("maizerite",() -> new Item(defaultitemproperties()));
@@ -69,7 +69,7 @@ public class CornItems {
 	public static final RegistryObject<Item> MAIZERITESWORD = ITEMS.register("maizeritesword",() -> new CustomSwordItem(CornToolTiers.MAIZERITE,3,-2.4F,defaultitemproperties()));
 	public static final RegistryObject<Item> MAIZERITESHOVEL = ITEMS.register("maizeriteshovel",() -> new CustomShovelItem(CornToolTiers.MAIZERITE,2F,-3F,defaultitemproperties()));
 	public static final RegistryObject<Item> MAIZERITEBOW = ITEMS.register("maizeritebow",() -> new CustomBowItem(defaultitemproperties(),10,5,7,true));
-	public static final RegistryObject<Item> MAIZERITESTAFF = ITEMS.register("maizeritestaff",() -> new CustomStaffItem(defaultitemproperties(),3,false));
+	public static final RegistryObject<Item> MAIZERITESTAFF = ITEMS.register("maizeritestaff",() -> new CustomStaffItem(defaultitemproperties(),3,false, CornItems.LESSERSOUL));
 
 
 	private static Item.Properties defaultitemproperties(){

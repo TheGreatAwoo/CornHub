@@ -13,27 +13,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class CustomStaffItem extends BowItem {
 
-    private int explosionPower;
-    private boolean boss;
+    private final int explosionPower;
+    private final boolean lightning;
+    private final Supplier<Item> fuel;
 
-    private int MaxDura;
-    private int CurrentDura;
-
-    private Item Itemused;
-
-    public CustomStaffItem(Properties p_40660_, int explosionPower, boolean boss) {
-        super(p_40660_);
+    public CustomStaffItem(Properties properties, int explosionPower, boolean lightning, Supplier<Item> fuel) {
+        super(properties);
         this.explosionPower = explosionPower;
-        this.boss=boss;
-
-        this.MaxDura=100;
-        this.CurrentDura=100;
-//        this.getDurabilityForDisplay(new ItemStack(this));
-//        this.showDurabilityBar(new ItemStack(this));
-
+        this.lightning = lightning;
+        this.fuel = fuel;
     }
 
     @Override
@@ -42,121 +34,64 @@ public class CustomStaffItem extends BowItem {
     }
 
     @Override
-    public int getDamage(ItemStack stack) {
-        return MaxDura-CurrentDura;
-    }
-
-    @Override
     public int getMaxDamage(ItemStack stack) {
-        return MaxDura;
+        if(lightning) {
+            return 50;
+        }
+        return 200 / explosionPower;
     }
-
-
-//    @Override
-//    public int getItemStackLimit(ItemStack stack) {
-//        return 1;
-//    }
-
 
     @Override
     public Predicate<ItemStack> getAllSupportedProjectiles() {
-        return  ((p_43015_) -> {
-
-            if(boss==false){
-                Itemused= CornItems.LESSERSOUL.get();
-            return p_43015_.is(CornItems.CORNSOUL.get());
-                }
-            Itemused= CornItems.LESSERSOUL.get();
-            return p_43015_.is(CornItems.LESSERSOUL.get());
-
-        });
-
-
+        return  (itemStack) -> itemStack.is(fuel.get());
     }
 
     @Override
-    public void releaseUsing(ItemStack p_40667_, Level p_40668_, LivingEntity p_40669_, int p_40670_) {
+    public void releaseUsing(ItemStack staffStack, Level level, LivingEntity user, int duration) {
+        if (user instanceof Player) {
+            Player player = (Player) user;
 
+            Vec3 vec3 = user.getViewVector(1.0F);
+            double d2 = user.getX() + vec3.x * 4.0D;
+            double d3 = user.getY(0.5D) + 0.5D;
+            double d4 = user.getZ() + vec3.z * 4.0D;
 
-        if (p_40669_ instanceof Player) {
-            Player player = (Player) p_40669_;
+            boolean creative = player.getAbilities().instabuild;
+            ItemStack projectileStack = player.getProjectile(staffStack);
 
-            Level level = p_40668_;
-            Vec3 vec3 = p_40669_.getViewVector(1.0F);
-            double d2 = p_40669_.getX() + vec3.x * 4.0D;
-            double d3 = p_40669_.getY(0.5D) + 0.5D;
-            double d4 = p_40669_.getZ() + vec3.z * 4.0D;
-
-
-
-            boolean flag = player.getAbilities().instabuild;
-            ItemStack itemstack = player.getProjectile(p_40667_);
-
-            int i = this.getUseDuration(p_40667_) - p_40670_;
-            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(p_40667_, p_40668_, player, i, !itemstack.isEmpty() || flag);
+            int i = this.getUseDuration(staffStack) - duration;
+            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(staffStack, level, player, i, !projectileStack.isEmpty() || creative);
             if (i < 0) return;
 
-            if (!itemstack.isEmpty() || flag) {
-                if (itemstack.isEmpty()) {
-                    itemstack = new ItemStack(Itemused);
+            if (!projectileStack.isEmpty() || creative) {
+                if (projectileStack.isEmpty()) {
+                    projectileStack = new ItemStack(fuel.get());
                 }
-
-
-                if (CurrentDura >= explosionPower * 1 && boss == false || boss == true && CurrentDura >= 4) {
-
-                    if (boss == false) {
-
-
-                        LargeFireball largefireball = new LargeFireball(level, p_40669_, d2, d3, d4, this.explosionPower);
-                        largefireball.setPos(p_40669_.getX() + vec3.x * 4.0D, p_40669_.getY(0.5D) + 0.5D, p_40669_.getZ() + vec3.z * 4.0D);
-
-                        largefireball.yPower = vec3.y;
-                        largefireball.zPower = vec3.z;
-                        largefireball.xPower = vec3.x;
-                        level.addFreshEntity(largefireball);
-                        player.awardStat(Stats.ITEM_USED.get(this));
-//                    CurrentDura-=1*explosionPower;
-//                        this.setDamage((new ItemStack(this)), explosionPower);
-                        player.getCooldowns().addCooldown(this,100);
-
-                    } else {
-
-
-                        LightingBall largefireball = new LightingBall(level, p_40669_, d2, d3, d4, this.explosionPower);
-                        largefireball.setPos(p_40669_.getX() + vec3.x * 4.0D, p_40669_.getY(0.5D) + 0.5D, p_40669_.getZ() + vec3.z * 4.0D);
-
-                        largefireball.yPower = vec3.y;
-                        largefireball.zPower = vec3.z;
-                        largefireball.xPower = vec3.x;
-                        level.addFreshEntity(largefireball);
-                        player.awardStat(Stats.ITEM_USED.get(this));
-//                    CurrentDura-=4;
-//                        this.setDamage((new ItemStack(this)), explosionPower);
-                        player.getCooldowns().addCooldown(this,100);
-
-                    }
+                LargeFireball projectileEntity;
+                if (!lightning) {
+                    projectileEntity = new LargeFireball(level, user, d2, d3, d4, this.explosionPower);
                 } else {
-                    player.getInventory().removeItem((new ItemStack(this)));
-
+                    projectileEntity = new LightingBall(level, user, d2, d3, d4, this.explosionPower);
                 }
+                projectileEntity.setPos(user.getX() + vec3.x * 4.0D, user.getY(0.5D) + 0.5D, user.getZ() + vec3.z * 4.0D);
 
-                itemstack.shrink(1);
-                if (itemstack.isEmpty()) {
-                    player.getInventory().removeItem(itemstack);
+                projectileEntity.yPower = vec3.y;
+                projectileEntity.zPower = vec3.z;
+                projectileEntity.xPower = vec3.x;
+                level.addFreshEntity(projectileEntity);
+                player.awardStat(Stats.ITEM_USED.get(this));
+                player.getCooldowns().addCooldown(this,100);
+                staffStack.hurtAndBreak(1, player, (p) -> {
+                    p.broadcastBreakEvent(player.getUsedItemHand());
+                });
+
+                projectileStack.shrink(1);
+                if (projectileStack.isEmpty()) {
+                    player.getInventory().removeItem(projectileStack);
                 }
-
-
-
-//                this.getDurabilityForDisplay(new ItemStack(this));
-
-
             }
-
         }
     }
-
-
-
 
 
     @Override
@@ -168,27 +103,6 @@ public class CustomStaffItem extends BowItem {
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
         return false;
     }
-
-//
-//    @Override
-//    public Predicate<ItemStack> getSupportedHeldProjectiles() {
-//        return super.getSupportedHeldProjectiles();
-//    }
-//
-//    @Override
-//    public int getDefaultProjectileRange() {
-//        return 30;
-//    }
-//
-//    @Override
-//    public Predicate<ItemStack> getAllSupportedProjectiles() {
-//        return  ((p_43015_) -> {
-//            return p_43015_.is(Items.GUNPOWDER);
-//        });
-
-//
-//    }
-
 
 }
 
