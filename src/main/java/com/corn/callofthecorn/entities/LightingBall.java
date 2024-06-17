@@ -11,6 +11,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class LightingBall extends LargeFireball {
 
+    private int age = 0;
+
     public LightingBall(Level p_181151_, LivingEntity p_181152_, double p_181153_, double p_181154_, double p_181155_, int p_181156_) {
         super(p_181151_, p_181152_, p_181153_, p_181154_, p_181155_, p_181156_);
     }
@@ -37,6 +39,9 @@ public class LightingBall extends LargeFireball {
         lightningbolt.moveTo(Vec3.atBottomCenterOf(this.blockPosition()));
         this.level().addFreshEntity(lightningbolt);
         super.tick();
+        if(age++ > 80) {
+            this.kill();
+        }
     }
 }
 
