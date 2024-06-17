@@ -3,6 +3,7 @@ package com.corn.callofthecorn.entities.crow;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -53,10 +54,16 @@ public class Crow extends Parrot {
 
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource p_21385_, int p_21386_, boolean p_21387_) {
-        super.dropCustomDeathLoot(p_21385_, p_21386_, p_21387_);
-        this.spawnAtLocation(Items.FEATHER.getDefaultInstance().copyWithCount(random.nextInt(3)));
-        this.spawnAtLocation(Items.CHICKEN);
+    protected void dropCustomDeathLoot(DamageSource source, int p_21386_, boolean p_21387_) {
+        super.dropCustomDeathLoot(source, p_21386_, p_21387_);
+        if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            this.spawnAtLocation(Items.FEATHER.getDefaultInstance().copyWithCount(random.nextInt(3)));
+            if(isOnFire()) {
+                this.spawnAtLocation(Items.COOKED_CHICKEN);
+            } else {
+                this.spawnAtLocation(Items.CHICKEN);
+            }
+        }
     }
 
 
