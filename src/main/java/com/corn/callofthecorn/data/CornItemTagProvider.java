@@ -45,6 +45,7 @@ public class CornItemTagProvider extends ItemTagsProvider {
 
         this.tag(ItemTags.AXES).add(CornItems.CORNMETALAXE.get());
         this.tag(ItemTags.AXES).add(CornItems.MAIZERITEAXE.get());
+        this.tag(ItemTags.AXES).add(CornItems.KERNAL.get());
 
         this.tag(ItemTags.HOES).add(CornItems.CORNMETALHOE.get());
         this.tag(ItemTags.HOES).add(CornItems.MAIZERITEHOE.get());
