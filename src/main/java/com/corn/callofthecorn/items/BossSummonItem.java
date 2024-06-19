@@ -12,13 +12,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.extensions.IForgeItem;
+import net.neoforged.neoforge.common.extensions.IItemExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class BossSummonItem extends Item implements IForgeItem {
+public class BossSummonItem extends Item implements IItemExtension {
     protected final Supplier<EntityType<? extends Mob>> typeSupplier;
     private final int minSpawnLocations;
     private final double minDistance;

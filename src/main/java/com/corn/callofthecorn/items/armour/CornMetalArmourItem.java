@@ -57,84 +57,85 @@ public class CornMetalArmourItem extends CornArmourItem {
     }
 
     @Override
-    public void doArmourTick(ItemStack stack, Level world, Player player) {
-        boolean appliedBonus = false;
-        int Setbonus = 0;
-        CompoundTag tag = stack.getOrCreateTag();
-        ListTag l = tag.getList("AttributeModifiers", 10);
-        l.clear();
-        stack.setTag(tag);
+    public void doArmourTick(ItemStack stack, Level world, Entity entity) {
+        if (entity instanceof Player player) {
+            boolean appliedBonus = false;
+            int Setbonus = 0;
+            CompoundTag tag = stack.getOrCreateTag();
+            ListTag l = tag.getList("AttributeModifiers", 10);
+            l.clear();
+            stack.setTag(tag);
 
-        Setbonus = CalcStack.getSetBonus(player, CornTags.Items.CORNMETAL_SET_ITEMS);
+            Setbonus = CalcStack.getSetBonus(player, CornTags.Items.CORNMETAL_SET_ITEMS);
 
 
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.HEAD);
-                appliedBonus = true;
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.HEAD);
+                    appliedBonus = true;
+                }
+
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.HEAD);
+                    player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.HEAD);
+                    appliedBonus = true;
+                }
             }
 
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.HEAD);
-                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.HEAD);
-                appliedBonus = true;
-            }
-        }
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.FEET);
+                    appliedBonus = true;
+                }
 
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.FEET);
-                appliedBonus = true;
-            }
-
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.FEET);
-                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.FEET);
-                appliedBonus = true;
-            }
-        }
-
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.CHEST);
-                appliedBonus = true;
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.FEET);
+                    player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.FEET);
+                    appliedBonus = true;
+                }
             }
 
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.CHEST);
-                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.CHEST);
-                appliedBonus = true;
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.CHEST);
+                    appliedBonus = true;
+                }
+
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.CHEST);
+                    player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.CHEST);
+                    appliedBonus = true;
+                }
+            }
+
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.LEGS);
+                    appliedBonus = true;
+                }
+
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof CornMetalArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.LEGS);
+                    player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.LEGS);
+                    appliedBonus = true;
+                }
+            }
+
+
+            if (intendedSlot == EquipmentSlot.LEGS) {
+                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR, legAt, EquipmentSlot.LEGS);
+            }
+
+            if (intendedSlot == EquipmentSlot.HEAD) {
+                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR, headAt, EquipmentSlot.HEAD);
+            }
+            if (intendedSlot == EquipmentSlot.CHEST) {
+                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR, chestAt, EquipmentSlot.CHEST);
+            }
+            if (intendedSlot == EquipmentSlot.FEET) {
+                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR, feetAt, EquipmentSlot.FEET);
             }
         }
-
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonus, EquipmentSlot.LEGS);
-                appliedBonus = true;
-            }
-
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof CornMetalArmourItem) {
-                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MAX_HEALTH, FullBonus, EquipmentSlot.LEGS);
-                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MOVEMENT_SPEED, FullBonusSpeed, EquipmentSlot.LEGS);
-                appliedBonus = true;
-            }
-        }
-
-
-        if (intendedSlot == EquipmentSlot.LEGS) {
-            player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR, legAt, EquipmentSlot.LEGS);
-        }
-
-        if (intendedSlot == EquipmentSlot.HEAD) {
-            player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR, headAt, EquipmentSlot.HEAD);
-        }
-        if (intendedSlot == EquipmentSlot.CHEST) {
-            player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR, chestAt, EquipmentSlot.CHEST);
-        }
-        if (intendedSlot == EquipmentSlot.FEET) {
-            player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR, feetAt, EquipmentSlot.FEET);
-        }
-
     }
 
 

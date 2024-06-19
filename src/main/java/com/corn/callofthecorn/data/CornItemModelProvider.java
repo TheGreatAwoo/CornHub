@@ -2,17 +2,18 @@ package com.corn.callofthecorn.data;
 
 import com.corn.callofthecorn.Main;
 import com.corn.callofthecorn.init.CornItems;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class CornItemModelProvider extends ItemModelProvider {
 
@@ -24,16 +25,16 @@ public class CornItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         Set<Item> handheldItems = new HashSet();
         Set<Item> bowItems = new HashSet();
-        for(RegistryObject<Item> registryObject : CornItems.HANDHELD_ITEMS) {
+        for(Supplier<Item> registryObject : CornItems.HANDHELD_ITEMS) {
             handheldItems.add(registryObject.get());
         }
-        for(RegistryObject<Item> registryObject : CornItems.BOW_ITEMS) {
+        for(Supplier<Item> registryObject : CornItems.BOW_ITEMS) {
             bowItems.add(registryObject.get());
         }
-        for(RegistryObject<Item> regOb : CornItems.ITEMS.getEntries()) {
+        for(DeferredHolder<Item, ? extends Item> regOb : CornItems.ITEMS.getEntries()) {
             Item item = regOb.get();
             if(item instanceof BlockItem) continue;
-            String name = ForgeRegistries.ITEMS.getKey(item).getPath();
+            String name = BuiltInRegistries.ITEM.getKey(item).getPath();
             if(handheldItems.contains(item)) {
                 singleTexture(name, new ResourceLocation("item/handheld"), "layer0", modLoc("item/" + name));
             } else if(bowItems.contains(item)) {

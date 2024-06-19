@@ -60,7 +60,7 @@ public class CustomStaffItem extends BowItem {
             ItemStack projectileStack = player.getProjectile(staffStack);
 
             int i = this.getUseDuration(staffStack) - duration;
-            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(staffStack, level, player, i, !projectileStack.isEmpty() || creative);
+            i = net.neoforged.neoforge.event.EventHooks.onArrowLoose(staffStack, level, player, i, !projectileStack.isEmpty() || creative);
             if (i < 0) return;
 
             if (!projectileStack.isEmpty() || creative) {

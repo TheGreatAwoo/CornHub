@@ -2,6 +2,7 @@ package com.corn.callofthecorn.data;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -10,7 +11,6 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -45,7 +45,7 @@ public class CornRecipeProvider extends RecipeProvider {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(in), RecipeCategory.MISC,
                         out, xp, 200)
                 .unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(in))
-                .save(output, ForgeRegistries.ITEMS.getKey(in));
+                .save(output, BuiltInRegistries.ITEM.getKey(in));
     }
 
     private void standardSmeltable(RecipeOutput output, Item in, Item out, float xp) {
@@ -61,7 +61,7 @@ public class CornRecipeProvider extends RecipeProvider {
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(in), RecipeCategory.MISC,
                         out, xp, 100)
                 .unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(in))
-                .save(output, ForgeRegistries.ITEMS.getKey(in) + "_blast");
+                .save(output, BuiltInRegistries.ITEM.getKey(in) + "_blast");
     }
 
     private void standardBlastable(RecipeOutput output, Block in, Item out, float xp) {

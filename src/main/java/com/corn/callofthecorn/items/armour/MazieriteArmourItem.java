@@ -67,94 +67,95 @@ public class MazieriteArmourItem extends CornArmourItem {
     }
 
     @Override
-    public void doArmourTick(ItemStack stack, Level world, Player player) {
-        boolean appliedBonus = false;
-        int Setbonus = 0;
-        CompoundTag tag = stack.getOrCreateTag();
-        ListTag l = tag.getList("AttributeModifiers", 10);
-        l.clear();
-        stack.setTag(tag);
+    public void doArmourTick(ItemStack stack, Level world, Entity entity) {
+        if (entity instanceof Player player) {
+            boolean appliedBonus = false;
+            int Setbonus = 0;
+            CompoundTag tag = stack.getOrCreateTag();
+            ListTag l = tag.getList("AttributeModifiers", 10);
+            l.clear();
+            stack.setTag(tag);
 
-        Setbonus = CalcStack.getSetBonus(player, CornTags.Items.MAIZERITE_SET_ITEMS);
+            Setbonus = CalcStack.getSetBonus(player, CornTags.Items.MAIZERITE_SET_ITEMS);
 
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.HEAD);
-                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.HEAD);
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.HEAD);
+                    player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.HEAD);
 
-                appliedBonus = true;
+                    appliedBonus = true;
+                }
+
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.HEAD);
+                    player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.HEAD);
+                    appliedBonus = true;
+                }
             }
 
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.HEAD);
-                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.HEAD);
-                appliedBonus = true;
-            }
-        }
 
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.FEET);
+                    player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.FEET);
+                    appliedBonus = true;
+                }
 
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.FEET);
-                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.FEET);
-                appliedBonus = true;
-            }
-
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.FEET);
-                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.FEET);
-                appliedBonus = true;
-            }
-        }
-
-
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.CHEST);
-                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.CHEST);
-                appliedBonus = true;
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.FEET);
+                    player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.FEET);
+                    appliedBonus = true;
+                }
             }
 
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.CHEST);
-                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.CHEST);
-                appliedBonus = true;
+
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.CHEST);
+                    player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.CHEST);
+                    appliedBonus = true;
+                }
+
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.CHEST);
+                    player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.CHEST);
+                    appliedBonus = true;
+                }
+            }
+
+
+            if (!appliedBonus) {
+                if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.LEGS);
+                    player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.LEGS);
+                    appliedBonus = true;
+                }
+
+                if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof MazieriteArmourItem) {
+                    player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.LEGS);
+                    player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.LEGS);
+                    appliedBonus = true;
+                }
+            }
+
+
+            if (intendedSlot == EquipmentSlot.LEGS) {
+                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR, legAt, EquipmentSlot.LEGS);
+                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, legAtT, EquipmentSlot.LEGS);
+            }
+            if (intendedSlot == EquipmentSlot.HEAD) {
+                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, headAtT, EquipmentSlot.HEAD);
+                player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR, headAt, EquipmentSlot.HEAD);
+            }
+            if (intendedSlot == EquipmentSlot.CHEST) {
+                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, chestAtT, EquipmentSlot.CHEST);
+                player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR, chestAt, EquipmentSlot.CHEST);
+            }
+            if (intendedSlot == EquipmentSlot.FEET) {
+                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR, feetAt, EquipmentSlot.FEET);
+                player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, feetAtT, EquipmentSlot.FEET);
             }
         }
-
-
-        if (!appliedBonus) {
-            if (Setbonus >= 2 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MOVEMENT_SPEED, HalfBonusSpeed, EquipmentSlot.LEGS);
-                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MAX_HEALTH, HalfBonusHP, EquipmentSlot.LEGS);
-                appliedBonus = true;
-            }
-
-            if (Setbonus == 4 && player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof MazieriteArmourItem) {
-                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR, FullBonus, EquipmentSlot.LEGS);
-                player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.MAX_HEALTH, FullBonusHP, EquipmentSlot.LEGS);
-                appliedBonus = true;
-            }
-        }
-
-
-        if (intendedSlot == EquipmentSlot.LEGS) {
-            player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR, legAt, EquipmentSlot.LEGS);
-            player.getItemBySlot(EquipmentSlot.LEGS).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, legAtT, EquipmentSlot.LEGS);
-        }
-        if (intendedSlot == EquipmentSlot.HEAD) {
-            player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, headAtT, EquipmentSlot.HEAD);
-            player.getItemBySlot(EquipmentSlot.HEAD).addAttributeModifier(Attributes.ARMOR, headAt, EquipmentSlot.HEAD);
-        }
-        if (intendedSlot == EquipmentSlot.CHEST) {
-            player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, chestAtT, EquipmentSlot.CHEST);
-            player.getItemBySlot(EquipmentSlot.CHEST).addAttributeModifier(Attributes.ARMOR, chestAt, EquipmentSlot.CHEST);
-        }
-        if (intendedSlot == EquipmentSlot.FEET) {
-            player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR, feetAt, EquipmentSlot.FEET);
-            player.getItemBySlot(EquipmentSlot.FEET).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, feetAtT, EquipmentSlot.FEET);
-        }
-
     }
 
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {

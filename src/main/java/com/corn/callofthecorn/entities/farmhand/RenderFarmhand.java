@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderFarmhand extends MobRenderer<Farmhand,FarmhandModel<Farmhand>> {
 
-    private static final ResourceLocation Farmhand_LOCATION = new ResourceLocation(Main.MODID,"/textures/entities/farmhand.png");
+    private static final ResourceLocation Farmhand_LOCATION = new ResourceLocation(Main.MOD_ID,"/textures/entities/farmhand.png");
 
     public RenderFarmhand(EntityRendererProvider.Context p_174304_) {
         super(p_174304_,new FarmhandModel<>(p_174304_.bakeLayer(ClientEventSubscriber.FARMHAND_LAYER)),0.25F);

@@ -54,7 +54,7 @@ public class CustomBowItem extends BowItem {
             ItemStack itemstack = player.getProjectile(p_40667_);
 
             int i = this.getUseDuration(p_40667_) - p_40670_;
-            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(p_40667_, p_40668_, player, i, !itemstack.isEmpty() || flag);
+            i = net.neoforged.neoforge.event.EventHooks.onArrowLoose(p_40667_, p_40668_, player, i, !itemstack.isEmpty() || flag);
             if (i < 0) return;
 
             if (!itemstack.isEmpty() || flag) {
@@ -69,7 +69,7 @@ public class CustomBowItem extends BowItem {
 
                             ArrowItem arrowitem = (ArrowItem)(itemstack.getItem() instanceof ArrowItem ? itemstack.getItem() : Items.ARROW);
                            AbstractArrow abstractarrow = arrowitem.createArrow(p_40668_, itemstack, player);
-                        abstractarrow = customArrow(abstractarrow);
+                        abstractarrow = customArrow(abstractarrow, p_40667_);
                         abstractarrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 3.0F, 1.0F);
                         abstractarrow.setBaseDamage(Damage);
                         if (f == 1.0F) {

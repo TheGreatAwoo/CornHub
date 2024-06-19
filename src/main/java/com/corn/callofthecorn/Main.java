@@ -2,84 +2,25 @@ package com.corn.callofthecorn;
 
 import com.corn.callofthecorn.data.*;
 import com.corn.callofthecorn.init.*;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.scores.Team;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-@Mod(Main.MODID)
+@Mod(Main.MOD_ID)
 public class Main {
 
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final String MODID = "callofthecorn";
-    public static final String MOD_ID = MODID; // bro
+    public static final String MOD_ID = "callofthecorn";
 
-
-    public static final Team CTeam = new Team() {
-        @Override
-        public String getName() {
-            return "CornTeam";
-        }
-
-        @Override
-        public MutableComponent getFormattedName(Component p_83538_) {
-            return null;
-        }
-
-        @Override
-        public boolean canSeeFriendlyInvisibles() {
-            return false;
-        }
-
-        @Override
-        public boolean isAllowFriendlyFire() {
-            return false;
-        }
-
-        @Override
-        public Visibility getNameTagVisibility() {
-            return null;
-        }
-
-        @Override
-        public ChatFormatting getColor() {
-            return null;
-        }
-
-        @Override
-        public Collection<String> getPlayers() {
-            return null;
-        }
-
-        @Override
-        public Visibility getDeathMessageVisibility() {
-            return null;
-        }
-
-        @Override
-        public CollisionRule getCollisionRule() {
-            return null;
-        }
-    };
-
-
-    public Main() {
-
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public Main(IEventBus bus) {
         CornMobs.ENTITY_TYPES.register(bus);
         bus.addListener(CornMobs::registerAttributes);
         CornItems.ITEMS.register(bus);
@@ -88,12 +29,6 @@ public class Main {
         CornCreativeTabs.TABS.register(bus);
 
         bus.addListener(this::gatherData);
-
-        MinecraftForge.EVENT_BUS.register(this);
-
-        // For events that happen after initialization. This is probably going to be use a lot.
-        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-
     }
 
     public void gatherData(final GatherDataEvent event) {

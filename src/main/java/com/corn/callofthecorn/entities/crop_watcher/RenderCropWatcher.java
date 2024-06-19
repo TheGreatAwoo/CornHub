@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderCropWatcher extends HumanoidMobRenderer<CropWatcher, CropWatcherModel<CropWatcher>> {
 
-    private static final ResourceLocation CROPWATCHER_LOCATION = new ResourceLocation(Main.MODID,"/textures/entities/cropwatcher.png");
+    private static final ResourceLocation CROPWATCHER_LOCATION = new ResourceLocation(Main.MOD_ID,"/textures/entities/cropwatcher.png");
 
     public RenderCropWatcher(EntityRendererProvider.Context p_174304_) {
         this(p_174304_, ModelLayers.SKELETON, ModelLayers.SKELETON_INNER_ARMOR, ModelLayers.SKELETON_OUTER_ARMOR);

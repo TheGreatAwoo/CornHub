@@ -2,15 +2,15 @@ package com.corn.callofthecorn.data;
 
 import com.corn.callofthecorn.Main;
 import com.corn.callofthecorn.init.CornBlocks;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Supplier;
 
 public class CornBlockStateProvider  extends BlockStateProvider {
 
@@ -29,8 +29,8 @@ public class CornBlockStateProvider  extends BlockStateProvider {
         differentItemTexture.add(CornBlocks.CORN_SEED.get());
 
         // Add the item models to all registered blocks, except the exceptions above
-        for(Block block : CornBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).toList()) {
-            String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        for(Block block : CornBlocks.BLOCKS.getEntries().stream().map(Supplier::get).toList()) {
+            String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
             if(differentItemTexture.contains(block)) {
                 continue;
             }

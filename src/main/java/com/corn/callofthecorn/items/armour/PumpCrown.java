@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -31,10 +32,11 @@ public class PumpCrown extends CornArmourItem{
     }
 
     @Override
-    public void doArmourTick(ItemStack stack, Level world, Player player) {
-
-        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,1),player);
-        player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,1),player);
+    public void doArmourTick(ItemStack stack, Level world, Entity entity) {
+        if (entity instanceof LivingEntity livingEntity) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1), livingEntity);
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 1), livingEntity);
+        }
     }
 
     @Nullable

@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderPumpKing extends MobRenderer<PumpKing, PumpKingModel<PumpKing>> {
 
-    private static final ResourceLocation PUMPKING_LOCATION = new ResourceLocation(Main.MODID,"/textures/entities/pumpking.png");
+    private static final ResourceLocation PUMPKING_LOCATION = new ResourceLocation(Main.MOD_ID,"/textures/entities/pumpking.png");
 
     public RenderPumpKing(EntityRendererProvider.Context p_174304_) {
         super(p_174304_,new PumpKingModel<>(p_174304_.bakeLayer(ClientEventSubscriber.PUMPKING_LAYER)),.5F);

@@ -8,23 +8,24 @@ import com.corn.callofthecorn.entities.harvest_crow.HarvestCrow;
 import com.corn.callofthecorn.entities.harvester.Harvester;
 import com.corn.callofthecorn.entities.pumpking.PumpKing;
 import com.corn.callofthecorn.entities.scarecrow.Scarecrow;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 public class CornMobs {
 
 
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Main.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, Main.MOD_ID);
 
 
-    public static final RegistryObject<EntityType<Scarecrow>> SCARECROW = ENTITY_TYPES.register("scarecrow",
+    public static final Supplier<EntityType<Scarecrow>> SCARECROW = ENTITY_TYPES.register("scarecrow",
             () -> EntityType.Builder.<Scarecrow>of(Scarecrow::new, MobCategory.MONSTER)
                     .sized(EntityType.SKELETON.getWidth(), EntityType.SKELETON.getHeight())
                     .setTrackingRange(80)
@@ -37,7 +38,7 @@ public class CornMobs {
 
 
 
-    public static final RegistryObject<EntityType<Farmhand>> FARMHAND = ENTITY_TYPES.register("farmhand",
+    public static final Supplier<EntityType<Farmhand>> FARMHAND = ENTITY_TYPES.register("farmhand",
             () -> EntityType.Builder.<Farmhand>of(Farmhand::new, MobCategory.MONSTER)
                     .sized(EntityType.ZOMBIE.getWidth(), EntityType.ZOMBIE.getHeight())
                     .setTrackingRange(50)
@@ -50,7 +51,7 @@ public class CornMobs {
 
 
 
-    public static final RegistryObject<EntityType<Harvester>> HARVESTER = ENTITY_TYPES.register("harvester",
+    public static final Supplier<EntityType<Harvester>> HARVESTER = ENTITY_TYPES.register("harvester",
             () -> EntityType.Builder.<Harvester>of(Harvester::new, MobCategory.MONSTER)
                     .sized(EntityType.SKELETON.getWidth(), EntityType.SKELETON.getHeight())
                     .setTrackingRange(60)
@@ -62,7 +63,7 @@ public class CornMobs {
     );
 
 
-    public static final RegistryObject<EntityType<HarvestCrow>> HARVEST = ENTITY_TYPES.register("harvest",
+    public static final Supplier<EntityType<HarvestCrow>> HARVEST = ENTITY_TYPES.register("harvest",
             () -> EntityType.Builder.<HarvestCrow>of(HarvestCrow::new, MobCategory.MONSTER)
                     .sized(EntityType.GHAST.getWidth(), EntityType.GHAST.getHeight())
                     .setTrackingRange(500)
@@ -73,7 +74,7 @@ public class CornMobs {
     );
 
 
-    public static final RegistryObject<EntityType<CropWatcher>> CROPWATCHER = ENTITY_TYPES.register("cropwatcher",
+    public static final Supplier<EntityType<CropWatcher>> CROPWATCHER = ENTITY_TYPES.register("cropwatcher",
             () -> EntityType.Builder.<CropWatcher>of(CropWatcher::new, MobCategory.MONSTER)
                     .sized(EntityType.SKELETON.getWidth(), EntityType.SKELETON.getHeight())
                     .setTrackingRange(20)
@@ -83,7 +84,7 @@ public class CornMobs {
 
     );
 
-    public static final RegistryObject<EntityType<PumpKing>> PUMPKING = ENTITY_TYPES.register("pumpking",
+    public static final Supplier<EntityType<PumpKing>> PUMPKING = ENTITY_TYPES.register("pumpking",
             () -> EntityType.Builder.<PumpKing>of(PumpKing::new, MobCategory.MONSTER)
                     .sized(EntityType.SKELETON.getWidth(), EntityType.SKELETON.getHeight())
                     .setTrackingRange(40)
@@ -93,7 +94,7 @@ public class CornMobs {
     );
 
 
-    public static final RegistryObject<EntityType<Crow>> CROW = ENTITY_TYPES.register("crow",
+    public static final Supplier<EntityType<Crow>> CROW = ENTITY_TYPES.register("crow",
             () -> EntityType.Builder.<Crow>of(Crow::new, MobCategory.CREATURE)
                     .sized(EntityType.PARROT.getWidth(),EntityType.PARROT.getHeight())
                     .setTrackingRange(40)
