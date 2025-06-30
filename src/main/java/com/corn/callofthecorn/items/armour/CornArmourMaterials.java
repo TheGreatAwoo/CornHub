@@ -1,80 +1,59 @@
 package com.corn.callofthecorn.items.armour;
 
-import com.corn.callofthecorn.init.CornItems;
-import net.minecraft.sounds.SoundEvent;
+import com.corn.callofthecorn.Main;
+import com.corn.callofthecorn.data.CornTags;
+import com.google.common.collect.Maps;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
-import java.util.function.Supplier;
+import java.util.Map;
 
-public enum CornArmourMaterials implements ArmorMaterial {
+public class CornArmourMaterials {
 
-    CORNMETAL("cornmetal", 8, new int[]{2, 5, 6, 2}, 1, SoundEvents.ARMOR_EQUIP_CHAIN, 0.0F, 0.0F, () -> {
-        return Ingredient.of(CornItems.CORNMETALBAR.get());
-    }),
-    MAIZERITE("maizerite", 25, new int[]{3, 6, 8, 3}, 1, SoundEvents.ARMOR_EQUIP_CHAIN, 2.0F, 0.0F, () -> {
-        return Ingredient.of(CornItems.MAIZERITE.get());
-    }),
-    PUMPKIN("pumpkin", 500, new int[]{3, 6, 8, 1}, 1, SoundEvents.ARMOR_EQUIP_CHAIN, 3.0F, 0.0F, () -> {
-        return Ingredient.of(Blocks.PUMPKIN);
-    });
+    public static final ArmorMaterial CORNMETAL = new ArmorMaterial(
+            8, makeDefence(2, 4, 6, 3, 5),
+            1, SoundEvents.ARMOR_EQUIP_CHAIN, 0f, 0f, // ench, sound, toughness, knockback
+            CornTags.Items.CORN_TOOL_MATERIALS, // repair items - corn bar
+            // The relative location of the EquipmentModel JSON at assets/<namespace>/models/equipment/<path>.json
+            createId("cornmetal")
+        );
 
-    private static final int[] BASE_DURABILITY_BY_SLOT = new int[]{13, 15, 16, 11};
-    private final String name;
-    public final int durabilityMultiplier;
-    private final int[] slotProtections;
-    public final int enchantmentValue;
-    private final SoundEvent sound;
-    private final float toughness;
-    private final float knockbackResistance;
-    private final LazyLoadedValue<Ingredient> repairIngredient;
+    public static final ArmorMaterial MAIZERITE = new ArmorMaterial(
+            25, makeDefence(3, 5, 8, 4, 11),
+            1, SoundEvents.ARMOR_EQUIP_CHAIN, 2f, 0f, // ench, sound, toughness, knockback
+            CornTags.Items.MAIZERITE_TOOL_MATERIALS, // repair items - maizerite
+            // The relative location of the EquipmentModel JSON at assets/<namespace>/models/equipment/<path>.json
+            createId("maizerite")
+    );
 
-    CornArmourMaterials(String name, int durabilityMult, int[] protections, int enchantability, SoundEvent sount, float toughness, float knockbackResistance, Supplier<Ingredient> repairItem) {
-        this.name = name;
-        this.durabilityMultiplier = durabilityMult;
-        this.slotProtections = protections;
-        this.enchantmentValue = enchantability;
-        this.sound = sount;
-        this.toughness = toughness;
-        this.knockbackResistance = knockbackResistance;
-        this.repairIngredient = new LazyLoadedValue<>(repairItem);
+    public static final ArmorMaterial PUMPKIN = new ArmorMaterial(
+            500, makeDefence(3, 5, 8, 1, 5),
+            1, SoundEvents.ARMOR_EQUIP_CHAIN, 3f, 0f, // ench, sound, toughness, knockback
+            CornTags.Items.PUMPKING_CROWN_MATERIALS, // repair items - pumpkin block
+            // The relative location of the EquipmentModel JSON at assets/<namespace>/models/equipment/<path>.json
+            createId("pumpkin")
+    );
+
+    private static Map<ArmorType, Integer> makeDefence(int b, int l, int c, int h, int o) {
+        return Maps.newEnumMap(
+                Map.of(
+                        ArmorType.BOOTS, b,
+                        ArmorType.LEGGINGS, l,
+                        ArmorType.CHESTPLATE, c,
+                        ArmorType.HELMET, h,
+                        ArmorType.BODY, o
+                )
+        );
     }
 
-    @Override
-    public int getDurabilityForType(ArmorItem.Type type) {
-        return BASE_DURABILITY_BY_SLOT[type.getSlot().getIndex()] * this.durabilityMultiplier;
+    private static ResourceKey<EquipmentAsset> createId(String p_386630_) {
+        return ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, p_386630_));
     }
 
-    @Override
-    public int getDefenseForType(ArmorItem.Type type) {
-        return this.slotProtections[type.getSlot().getIndex()];
-    }
-
-    public int getEnchantmentValue() {
-        return this.enchantmentValue;
-    }
-
-    public SoundEvent getEquipSound() {
-        return this.sound;
-    }
-
-    public Ingredient getRepairIngredient() {
-        return this.repairIngredient.get();
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public float getToughness() {
-        return this.toughness;
-    }
-
-    public float getKnockbackResistance() {
-        return this.knockbackResistance;
-    }
 }

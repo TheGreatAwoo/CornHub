@@ -1,6 +1,5 @@
 package com.corn.callofthecorn.entities.harvest_crow;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.model.QuadrupedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -8,11 +7,10 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.ParrotRenderState;
 import net.minecraft.util.Mth;
 
-import javax.annotation.Nonnull;
-
-public class HarvestCrowModel<T extends HarvestCrow> extends QuadrupedModel<T> {
+public class HarvestCrowModel<T extends HarvestCrow> extends QuadrupedModel<ParrotRenderState> {
 
 
 
@@ -23,7 +21,8 @@ public class HarvestCrowModel<T extends HarvestCrow> extends QuadrupedModel<T> {
 
 
     public HarvestCrowModel(ModelPart part){
-        super(part, false, 1.1F, 1.5F, 2.0F, 2.0F, 24);
+//        super(part, false, 1.1F, 1.5F, 2.0F, 2.0F, 24);
+        super(part);
         this.tail = part.getChild("tail");
        // this.shellTop = part.getChild("shell_top");
         this.belly = part.getChild("belly");
@@ -55,28 +54,45 @@ public class HarvestCrowModel<T extends HarvestCrow> extends QuadrupedModel<T> {
         return LayerDefinition.create(modelDefinition, 64, 32);
     }
 
-    @Override
-    @Nonnull
-    protected Iterable<ModelPart> bodyParts() {
-        return ImmutableList.of(this.body, this.rightHindLeg, this.leftHindLeg, this.rightFrontLeg, this.leftFrontLeg, this.tail, this.belly,this.neck); //this.shellTop
-    }
+//    @Override
+//    @Nonnull
+//    protected Iterable<ModelPart> bodyParts() {
+//        return ImmutableList.of(this.body, this.rightHindLeg, this.leftHindLeg, this.rightFrontLeg, this.leftFrontLeg, this.tail, this.belly,this.neck); //this.shellTop
+//    }
 
     @Override
-    public void setupAnim(@Nonnull T Harvest, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.head.xRot =  headPitch * 0.017453292F;
-        this.head.yRot =3.1F+ netHeadYaw * 0.017453292F;
+//    public void setupAnim(@Nonnull T Harvest, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(ParrotRenderState state) {
+        super.setupAnim(state);
+        this.head.xRot = state.xRot * (float) (Math.PI / 180.0);
+        this.head.yRot = state.yRot * (float) (Math.PI / 180.0);
+        float f2 = state.flapAngle * 0.3F;
+        this.head.y += f2;
+        this.tail.xRot = this.tail.xRot + Mth.cos(state.walkAnimationPos * 0.6662F) * 0.3F * state.walkAnimationSpeed;
+        this.tail.y += f2;
+        this.body.y += f2;
+        this.leftFrontLeg.zRot = -0.0873F - state.flapAngle;
+        this.leftFrontLeg.y += f2;
+        this.rightFrontLeg.zRot = 0.0873F + state.flapAngle;
+        this.rightFrontLeg.y += f2;
+        this.leftHindLeg.y += f2;
+        this.rightHindLeg.y += f2;
 
-        this.tail.yRot = Mth.cos(limbSwing * 0.4662F) * 0.6F * limbSwingAmount;
-        this.body.xRot= -15;
-        this.belly.xRot= -15;
-        this.tail.xRot=-.5F;
-        this.rightHindLeg.xRot = 0.5235987755982988F + (Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
-        this.leftHindLeg.xRot = -0.5235987755982988F + -(Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
 
-        this.rightFrontLeg.zRot = -0.5235987755982988F + -(Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
-        this.leftFrontLeg.zRot = 0.5235987755982988F + (Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
-        this.rightFrontLeg.xRot=-.5F;
-        this.leftFrontLeg.xRot=-.5F;
+//        this.head.xRot =  headPitch * 0.017453292F;
+//        this.head.yRot =3.1F+ netHeadYaw * 0.017453292F;
+//
+//        this.tail.yRot = Mth.cos(limbSwing * 0.4662F) * 0.6F * limbSwingAmount;
+//        this.body.xRot= -15;
+//        this.belly.xRot= -15;
+//        this.tail.xRot=-.5F;
+//        this.rightHindLeg.xRot = 0.5235987755982988F + (Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
+//        this.leftHindLeg.xRot = -0.5235987755982988F + -(Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
+//
+//        this.rightFrontLeg.zRot = -0.5235987755982988F + -(Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
+//        this.leftFrontLeg.zRot = 0.5235987755982988F + (Mth.cos(limbSwing * 2.0F) * 1.4F * limbSwingAmount);
+//        this.rightFrontLeg.xRot=-.5F;
+//        this.leftFrontLeg.xRot=-.5F;
 
     }
 

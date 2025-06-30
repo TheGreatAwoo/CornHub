@@ -4,8 +4,11 @@ import com.corn.callofthecorn.init.CornBlocks;
 import com.corn.callofthecorn.init.CornItems;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -13,17 +16,18 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import top.theillusivec4.curios.api.CuriosCapability;
-import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.*;
+import top.theillusivec4.curios.api.type.ISlotType;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = Main.MOD_ID,bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Main.MOD_ID)
 public class EventSubscriber {
 
     @SubscribeEvent
@@ -32,9 +36,8 @@ public class EventSubscriber {
                 itemRegisterHelper -> {
                     CornBlocks.BLOCKS.getEntries().stream().map(Supplier::get).forEach(
                             block -> {
-                                final Item.Properties properties = new Item.Properties();
-                                final BlockItem blockItem = new BlockItem(block, properties);
-                                itemRegisterHelper.register(BuiltInRegistries.BLOCK.getKey(block), blockItem);
+                                ResourceLocation key = BuiltInRegistries.BLOCK.getKey(block);
+                                itemRegisterHelper.register(key, new BlockItem(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, key))));
                             }
                     );
 
@@ -53,11 +56,11 @@ public class EventSubscriber {
                     }
 
                     @Override
-                    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext,
-                                                                                        UUID uuid) {
-                        Multimap<Attribute, AttributeModifier> modifiers = HashMultimap.create();
-                        modifiers.put(Attributes.LUCK, new AttributeModifier(uuid, "Luck", -1, AttributeModifier.Operation.ADDITION));
-                        return modifiers;
+                    public CurioAttributeModifiers getDefaultCurioAttributeModifiers() {
+                        CurioAttributeModifiers.Builder builder = CurioAttributeModifiers.builder();
+                        builder.addModifier(Attributes.LUCK, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "crowsfoot_unlucky"),
+                                -1, AttributeModifier.Operation.ADD_VALUE));
+                        return builder.build();
                     }
                 },
                 CornItems.CROWSFOOT.get());

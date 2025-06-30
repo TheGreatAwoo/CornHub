@@ -1,86 +1,61 @@
 package com.corn.callofthecorn.entities.scarecrow;
 
+import com.corn.callofthecorn.entities.crow.Crow;
 import com.corn.callofthecorn.init.CornItems;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
+import com.mojang.serialization.Codec;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
 
-public class Scarecrow extends Skeleton {
+public class Scarecrow extends AbstractSkeleton {
 
     public boolean active = false;
     public static int MAX_HP = 16;
-    public int stillVal;
-
-
-//    @Override
-//    public boolean isAngryAtAllPlayers(Level p_21671_) {
-//        return true;
-//    }
-
-
-//    @Override
-//    protected void registerGoals() {
-//        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
-//        this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
-//        this.goalSelector.addGoal(2, new MoveBackToVillageGoal(this, 0.6D, false));
-//        this.goalSelector.addGoal(4, new GolemRandomStrollInVillageGoal(this, 0.6D));
-//        this.goalSelector.addGoal(5, new OfferFlowerGoal(this));
-//        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
-//        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-//        this.targetSelector.addGoal(1, new DefendVillageTargetGoal(this));
-//        this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
-//        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-////        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (p_28879_) -> {
-////            return p_28879_ instanceof Enemy && !(p_28879_ instanceof Creeper);
-////        }));
-//        this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
-//    }
-
+    private static final EntityDataAccessor<Boolean> ALWAYS_ACTIVE = SynchedEntityData.defineId(Scarecrow.class, EntityDataSerializers.BOOLEAN);
 
     @Override
-    public boolean doHurtTarget(Entity p_28837_) {
-        this.level().broadcastEntityEvent(this, (byte) 4);
-        float f = 3;
-        float f1 = (int) f > 0 ? f / 2.0F + (float) this.random.nextInt((int) f) : f;
-        boolean flag = p_28837_.hurt(level().damageSources().mobAttack(this), f1);
-        if (flag) {
-            this.doEnchantDamageEffects(this, p_28837_);
-        }
-        return flag;
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new ScarecrowFreezeGoal<>(this));
+        this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Crow.class, true));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
     }
 
     @Override
-    public boolean hurt(DamageSource p_28848_, float p_28849_) {
-
-        boolean flag = super.hurt(p_28848_, p_28849_);
-        return flag;
-    }
-
-
-    @Override
-    protected void playStepSound(BlockPos p_28864_, BlockState p_28865_) {
-//        super.playStepSound(p_28864_, p_28865_);
+    protected SoundEvent getStepSound() {
+        return SoundEvents.BOGGED_STEP;
     }
 
     public Scarecrow(EntityType<? extends Scarecrow> type, Level level) {
         super(type, level);
-        stillVal = random.nextInt(10);
-
+        int stillVal = random.nextInt(10);
+        if(stillVal == 0) {
+            this.entityData.set(ALWAYS_ACTIVE, true);
+        }
+//        this.setNoAi(true);
     }
 
     @Override
@@ -90,7 +65,17 @@ public class Scarecrow extends Skeleton {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.GHAST_HURT;
+        if (active) {
+            return SoundEvents.GHAST_HURT;
+        } else {
+            return SoundEvents.WOOL_BREAK;
+        }
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ALWAYS_ACTIVE, false);
     }
 
     @Override
@@ -98,92 +83,83 @@ public class Scarecrow extends Skeleton {
         if (active) {
             return SoundEvents.SKELETON_HURT;
         } else {
-            stillVal = random.nextInt(10);
-            return null;
+            return SoundEvents.WOOL_HIT;
         }
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         if (this.active) {
-            return (super.getExperienceReward());
+            return super.getBaseExperienceReward(level);
         }
-        return (0);
-
+        return 0;
     }
 
+    @Override
+    protected void populateDefaultEquipmentSlots(RandomSource randomSource, DifficultyInstance difficultyInstance) {
+        super.populateDefaultEquipmentSlots(randomSource, difficultyInstance);
+        this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+    }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
-        super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
-        if (stillVal == 1 || active) {
-            ItemEntity itementity = this.spawnAtLocation(CornItems.LESSERSOUL.get());
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource p_31464_, boolean p_31466_) {
+        super.dropCustomDeathLoot(level, p_31464_, p_31466_);
+        if (active) {
+            ItemEntity itementity = this.spawnAtLocation(level, CornItems.LESSER_SOUL.get());
             if (itementity != null) {
                 itementity.setExtendedLifetime();
             }
         }
     }
 
-    @Override
-    protected void populateDefaultEquipmentSlots(RandomSource p_219059_, DifficultyInstance p_219060_) {
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.CARVED_PUMPKIN));
-        this.isSunBurnTick();
-        this.setNoAi(true);
-
+    private boolean wakeTime() {
+        return level().getSkyDarken() > 2;
     }
-
-    Player target = null;
-    int targetdis = 12;
 
 
     @Override
     public void tick() {
         super.tick();
+        int targetdis = 12;
 
-
-        if (!level().isNight()) {
-            targetdis = 12;
+        if (entityData.get(ALWAYS_ACTIVE)) {
+            active = true;
+        } else {
             active = false;
         }
 
-        if (stillVal == 1) {
-            active = true;
-            targetdis = 12;
-        }
-
-        if (level().isNight() || level().isRaining()) {
+        if (wakeTime()) {
             targetdis = 30;
             active = true;
         }
 
-
-        if (target != null) {
-            double d0 = target.getX() - this.getX();
-            double d1 = target.getY() - this.getY();
-            double d2 = target.getZ() - this.getZ();
-            double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
-            double distance = d3;
-            this.setNoAi(!(distance < targetdis) || !active);
+        if (getTarget() == null) {
+            active = false;
+        } else {
+            double distance = distanceTo(getTarget());
+            if(distance > targetdis) {
+                active = false;
+            }
         }
-        if (level().isNight()) {
-            this.setNoAi(false);
-        }
-
-
     }
-
-    @Override
-    public void startSeenByPlayer(ServerPlayer p_31483_) {
-        super.startSeenByPlayer(p_31483_);
-        target = p_31483_;
-    }
-
 
     @Override
     protected boolean isSunBurnTick() {
         return false;
     }
 
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.store("AlwaysActive", Codec.BOOL, this.entityData.get(ALWAYS_ACTIVE));
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        boolean aa = tag.read("AlwaysActive", Codec.BOOL).orElse(false);
+        this.entityData.set(ALWAYS_ACTIVE, aa);
+    }
 }
 
 

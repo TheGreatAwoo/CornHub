@@ -1,62 +1,27 @@
 package com.corn.callofthecorn.items.armour;
 
-import com.corn.callofthecorn.Main;
-import com.google.common.collect.Multimap;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 
-public class PumpCrown extends CornArmourItem{
-    private Multimap<Attribute, AttributeModifier> defaultModifiers;
-    private EquipmentSlot CurrentSlot;
-    private ArmorMaterial CurrentMaterial;
+public class PumpCrown extends Item {
 
-    public PumpCrown(ArmorMaterial p_40386_, Type p_40387_, Properties p_40388_) {
-        super(p_40386_, p_40387_, p_40388_);
+    public PumpCrown(Properties p_40388_) {
+        super(p_40388_);
     }
 
     @Override
-    public boolean isValidRepairItem(ItemStack p_40392_, ItemStack p_40393_) {
-        return false;
-    }
-
-    @Override
-    public void doArmourTick(ItemStack stack, Level world, Entity entity) {
-        if (entity instanceof LivingEntity livingEntity) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1), livingEntity);
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 1), livingEntity);
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, EquipmentSlot slot) {
+        if (entity instanceof LivingEntity livingEntity && slot != null  && slot.isArmor()) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 1), livingEntity);
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.HASTE, 1), livingEntity);
         }
-    }
-
-    @Nullable
-    @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-
-        if(slot==EquipmentSlot.LEGS){return  new ResourceLocation(Main.MOD_ID,"textures/item/cornmetal2.png").toString();}
-
-        else return  new ResourceLocation(Main.MOD_ID,"textures/item/pumpcrown.png").toString();
-
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return false;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return false;
     }
 
 }

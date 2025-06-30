@@ -19,19 +19,20 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-@Mod.EventBusSubscriber(modid = Main.MOD_ID,bus = Mod.EventBusSubscriber.Bus.MOD,value = Dist.CLIENT)
+@EventBusSubscriber(modid = Main.MOD_ID,value = Dist.CLIENT)
 public class ClientEventSubscriber {
 
-    public static final ModelLayerLocation SCARECROW_LAYER = new ModelLayerLocation(new ResourceLocation(Main.MOD_ID,"scarecrow"),"scarecrow");
-    public static final ModelLayerLocation FARMHAND_LAYER = new ModelLayerLocation(new ResourceLocation(Main.MOD_ID,"farmhand"),"farmhand");
-    public static final ModelLayerLocation HARVESTER_LAYER = new ModelLayerLocation(new ResourceLocation(Main.MOD_ID,"harvester"),"harvester");
-    public static final ModelLayerLocation HARVEST_LAYER = new ModelLayerLocation(new ResourceLocation(Main.MOD_ID,"harvest"),"harvest");
-    public static final ModelLayerLocation CROPWATCHER_LAYER = new ModelLayerLocation(new ResourceLocation(Main.MOD_ID,"cropwatcher"),"cropwatcher");
-    public static final ModelLayerLocation PUMPKING_LAYER = new ModelLayerLocation(new ResourceLocation(Main.MOD_ID,"pumpking"),"pumpking");
-    public static final ModelLayerLocation CROW_LAYER = new ModelLayerLocation(new ResourceLocation(Main.MOD_ID,"crow"),"crow");
+    public static final ModelLayerLocation SCARECROW_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID,"scarecrow"),"scarecrow");
+    public static final ModelLayerLocation FARMHAND_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID,"farmhand"),"farmhand");
+    public static final ModelLayerLocation HARVESTER_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID,"harvester"),"harvester");
+    public static final ModelLayerLocation HARVEST_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID,"harvest"),"harvest");
+    public static final ModelLayerLocation CROPWATCHER_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID,"cropwatcher"),"cropwatcher");
+    public static final ModelLayerLocation PUMPKING_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID,"pumpking"),"pumpking");
+    public static final ModelLayerLocation CROW_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID,"crow"),"crow");
 
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event){

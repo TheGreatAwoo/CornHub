@@ -3,19 +3,18 @@ package com.corn.callofthecorn.data;
 import com.corn.callofthecorn.Main;
 import com.corn.callofthecorn.init.CornItems;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class CornItemTagProvider extends ItemTagsProvider {
-    public CornItemTagProvider(DataGenerator dataGenerator, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagLookup<Block>> tp, @Nullable ExistingFileHelper existingFileHelper) {
-        super(dataGenerator.getPackOutput(), provider, tp, Main.MOD_ID, existingFileHelper);
+    public CornItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagLookup<Block>> tp) {
+        super(output, provider, tp, Main.MOD_ID);
     }
+
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {

@@ -4,9 +4,9 @@ import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
 
-public class CropWatcherModel<T extends CropWatcher> extends SkeletonModel<T> {
-
+public class CropWatcherModel extends SkeletonModel<SkeletonRenderState> {
 
     public CropWatcherModel(ModelPart p_170941_) {
         super(p_170941_);

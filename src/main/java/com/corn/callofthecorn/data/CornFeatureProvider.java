@@ -61,11 +61,11 @@ public class CornFeatureProvider extends DatapackBuiltinEntriesProvider {
     }
 
     private static ResourceKey<ConfiguredFeature<?,?>> cfk(String s) {
-        return  ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(Main.MOD_ID, s));
+        return  ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, s));
     }
 
     private static ResourceKey<PlacedFeature> pfk(String s) {
-        return  ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(Main.MOD_ID, s));
+        return  ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, s));
     }
 
 }

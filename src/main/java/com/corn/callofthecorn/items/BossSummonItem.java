@@ -3,10 +3,10 @@ package com.corn.callofthecorn.items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,17 +35,17 @@ public class BossSummonItem extends Item implements IItemExtension {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!(level instanceof ServerLevel)) {
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS;
         } else {
             BlockPos spawnPos = trySpawn((ServerLevel) level, player.getOnPos());
             if (spawnPos != null) {
                 stack.shrink(1);
                 level.gameEvent(player, GameEvent.ENTITY_PLACE, spawnPos);
             }
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
     }
 
@@ -65,7 +65,7 @@ public class BossSummonItem extends Item implements IItemExtension {
         }
         int idx = level.random.nextInt(positions.size());
         BlockPos pos = positions.get(idx);
-        if(typeSupplier.get().spawn(level, (ItemStack) null, null, pos, MobSpawnType.SPAWN_EGG, true, false) != null) {
+        if(typeSupplier.get().spawn(level, (ItemStack) null, null, pos, EntitySpawnReason.SPAWN_ITEM_USE, true, false) != null) {
             return pos;
         }
         return null;

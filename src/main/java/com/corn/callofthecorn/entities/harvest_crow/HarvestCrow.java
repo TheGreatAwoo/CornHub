@@ -4,10 +4,12 @@ import com.corn.callofthecorn.init.CornItems;
 import com.corn.callofthecorn.init.CornMobs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
@@ -18,7 +20,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -57,12 +58,18 @@ public class HarvestCrow extends WitherBoss {
     double YSTART;
     double ZSTART;
 
+    public float flap;
+    public float flapSpeed;
+    public float oFlapSpeed;
+    public float oFlap;
+    private float flapping = 1.0F;
+    private float nextFlap = 1.0F;
+
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(2, new RestrictSunGoal(this));
         this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Wolf.class, 6.0F, 1.0D, 1.2D));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
@@ -73,37 +80,30 @@ public class HarvestCrow extends WitherBoss {
     }
 
 
-    private static final Predicate<LivingEntity> LIVING_ENTITY_SELECTOR = (p_31504_) -> {
-        return p_31504_.getMobType() != MobType.UNDEAD && p_31504_.attackable();
+    private static final TargetingConditions.Selector LIVING_ENTITY_SELECTOR = new TargetingConditions.Selector() {
+        @Override
+        public boolean test(LivingEntity entity, ServerLevel p_376747_) {
+            return !entity.getType().is(EntityTypeTags.UNDEAD) && entity.attackable();
+        }
     };
 
     private static final TargetingConditions TARGETING_CONDITIONS = TargetingConditions.forCombat().range(20.0D).selector(LIVING_ENTITY_SELECTOR);
 
 
-    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(
+            this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)
+    ).setDarkenScreen(true);
 
 
     public HarvestCrow(EntityType<? extends HarvestCrow> type, Level level) {
         super(type, level);
         this.getNavigation().setCanFloat(false);
-    }
-
-
-//    @Nullable
-//    @Override
-//    public Team getTeam() {
-//        return Main.CTeam;
-//    }
-
-    @Override
-    public int getExperienceReward() {
-        return (super.getExperienceReward() * 15);
-
+        this.xpReward *= 15;
     }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
-        super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource p_31464_, boolean p_31466_) {
+        super.dropCustomDeathLoot(level, p_31464_, p_31466_);
 
         int r = random.nextInt(3);
         Item item = switch (r) {
@@ -111,7 +111,7 @@ public class HarvestCrow extends WitherBoss {
             case 1 -> CornItems.CROWSTAFF.get();
             default -> CornItems.HARVESTSTAFF.get();
         };
-        ItemEntity itementity = this.spawnAtLocation(item);
+        ItemEntity itementity = this.spawnAtLocation(level, item);
         if (itementity != null) {
             itementity.setExtendedLifetime();
             itementity.setGlowingTag(true);
@@ -152,16 +152,14 @@ public class HarvestCrow extends WitherBoss {
             double d3 = 1 - d0;
             double d4 = 2 - d1;
             double d5 = 3 - d2;
-            WitherSkull witherskull = new WitherSkull(this.level(), this, d3, d4, d5);
+            Vec3 v = new Vec3(d3, d4, d5);
+            WitherSkull witherskull = new WitherSkull(this.level(), this, v);
             witherskull.setOwner(this);
             witherskull.setDangerous(true);
             witherskull.setPosRaw(d0 + xran - 100, d1 + 50 + yran, d2 + zran - 100);
             witherskull.xOld = witherskull.position().x;
             witherskull.zOld = witherskull.position().z;
             witherskull.yOld = witherskull.position().y + 1;
-            witherskull.xPower = 0;
-            witherskull.zPower = 0;
-            witherskull.yPower = -1;
             this.level().addFreshEntity(witherskull);
 
 
@@ -175,11 +173,8 @@ public class HarvestCrow extends WitherBoss {
             int xran = random.nextInt(200);
             int zran = random.nextInt(200);
 
-            LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
+            LargeFireball largefireball = new LargeFireball(level(), this, new Vec3(d2, d3, d4), this.explosionPower);
             largefireball.setPos(this.getX() + xran - 100, this.getY() + 100, largefireball.getZ() + zran - 100);
-            largefireball.xPower = 0;
-            largefireball.zPower = 0;
-            largefireball.yPower = -1;
             level().addFreshEntity(largefireball);
         }
     }
@@ -195,6 +190,24 @@ public class HarvestCrow extends WitherBoss {
         target = p_31483_;
         flying = false;
         setGlowingTag(true);
+    }
+
+    private void calculateFlapping() {
+        this.oFlap = this.flap;
+        this.oFlapSpeed = this.flapSpeed;
+        this.flapSpeed = this.flapSpeed + (!this.onGround() && !this.isPassenger() ? 4 : -1) * 0.3F;
+        this.flapSpeed = Mth.clamp(this.flapSpeed, 0.0F, 1.0F);
+        if (!this.onGround() && this.flapping < 1.0F) {
+            this.flapping = 1.0F;
+        }
+
+        this.flapping *= 0.9F;
+        Vec3 vec3 = this.getDeltaMovement();
+        if (!this.onGround() && vec3.y < 0.0) {
+            this.setDeltaMovement(vec3.multiply(1.0, 0.6, 1.0));
+        }
+
+        this.flap = this.flap + this.flapping * 2.0F;
     }
 
 
@@ -271,24 +284,21 @@ public class HarvestCrow extends WitherBoss {
 
 
     private void Spawn(int mobLevel) {
-        System.out.println("Summon");
         for (int X = 0; X < mobLevel; X++) {
             EntityType<?> entitytype = CornMobs.SCARECROW.get();
-            ItemStack itemstack = new ItemStack(Items.ZOMBIE_VILLAGER_SPAWN_EGG);
             BlockPos blockpos1;
             BlockPos blockpos = this.blockPosition();
             Direction direction = this.getDirection();
             blockpos1 = blockpos.relative(direction);
-            entitytype.spawn((ServerLevel) level(), itemstack, target.level().getNearestPlayer(this, 0),
-                    blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1)
+            entitytype.spawn((ServerLevel) level(), null, target.level().getNearestPlayer(this, 0),
+                    blockpos1, EntitySpawnReason.TRIGGERED, true, !Objects.equals(blockpos, blockpos1)
                             && direction == Direction.UP);
         }
     }
 
 
     private void CrowAttack(double d0, double d1, double d2, double d3, double d4, double d5) {
-        System.out.println("Attack");
-        WitherSkull witherskull = new WitherSkull(this.level(), this, d3, d4, d5);
+        WitherSkull witherskull = new WitherSkull(this.level(), this, new Vec3(d3, d4, d5));
         witherskull.setOwner(this);
         witherskull.setDangerous(true);
         witherskull.setPosRaw(d0, d1, d2);
@@ -297,24 +307,21 @@ public class HarvestCrow extends WitherBoss {
 
 
     private void Fireball(double d0, double d1, double d2, double d3, double d4, double d5) {
-
-        System.out.println("Fireball");
         for (int x = 0; x < 10; x++) {
-
             d1 = 4.0D;
             Vec3 vec3 = this.getViewVector(1.0F);
             d2 = this.getX() + vec3.x * 4.0D;
             d3 = this.getY(0.5D);
             double d42 = this.getZ() + vec3.z * 4.0D;
-            LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d42, this.explosionPower);
+            LargeFireball largefireball = new LargeFireball(level(), this, new Vec3(d2, d3, d42), this.explosionPower);
             largefireball.setPos(this.getX() + vec3.x * 4.0D, this.getY(0.5D) + 0.5D, largefireball.getZ() + vec3.z * 4.0D);
-            largefireball.yPower = -10;
-            double offset = new Random().nextInt(10) - 5;
-            offset = offset / 10;
-            largefireball.zPower = offset;
-            offset = new Random().nextInt(10) - 5;
-            offset = offset / 10;
-            largefireball.xPower = offset;
+//            largefireball.yPower = -10;
+//            double offset = new Random().nextInt(10) - 5;
+//            offset = offset / 10;
+//            largefireball.zPower = offset;
+//            offset = new Random().nextInt(10) - 5;
+//            offset = offset / 10;
+//            largefireball.xPower = offset;
             level().addFreshEntity(largefireball);
             tick();
 
@@ -328,18 +335,17 @@ public class HarvestCrow extends WitherBoss {
             int xran = random.nextInt(20);
             int zran = random.nextInt(20);
 
-            LargeFireball largefireball = new LargeFireball(level(), this, d2, d3, d4, this.explosionPower);
+            LargeFireball largefireball = new LargeFireball(level(), this, new Vec3(d2, d3, d4), this.explosionPower);
             largefireball.setPos(this.getX() + xran - 10, this.getY() + 30, largefireball.getZ() + zran - 10);
 
-            largefireball.xPower = 0;
-            largefireball.zPower = 0;
-            largefireball.yPower = -.5;
+//            largefireball.xPower = 0;
+//            largefireball.zPower = 0;
+//            largefireball.yPower = -.5;
             level().addFreshEntity(largefireball);
         }
     }
 
     public void TNTRUN(double d0, double d1, double d2, double d3, double d4, double d5, int mobLevel) {
-        System.out.println("TnT");
         for (int X = 0; X < mobLevel; X++) {
             PrimedTnt TnT = new PrimedTnt(this.level(), d3, d4, d5, null);
             this.level().addFreshEntity(TnT);
@@ -352,7 +358,7 @@ public class HarvestCrow extends WitherBoss {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel level) {
         if (this.getInvulnerableTicks() > 0) {
             int k1 = this.getInvulnerableTicks() - 1;
             this.bossEvent.setProgress(1.0F - (float) k1 / 220.0F);
@@ -373,7 +379,7 @@ public class HarvestCrow extends WitherBoss {
             for (int i = 1; i < 3; ++i) {
                 if (this.tickCount >= this.nextHeadUpdate[i - 1]) {
                     this.nextHeadUpdate[i - 1] = this.tickCount + 10 + this.random.nextInt(10);
-                    if (this.level().getDifficulty() == Difficulty.NORMAL || this.level().getDifficulty() == Difficulty.HARD) {
+                    if (level.getDifficulty() == Difficulty.NORMAL || level.getDifficulty() == Difficulty.HARD) {
                         int i3 = i - 1;
                         int j3 = this.idleHeadUpdates[i - 1];
                         this.idleHeadUpdates[i3] = this.idleHeadUpdates[i - 1] + 1;
@@ -390,7 +396,7 @@ public class HarvestCrow extends WitherBoss {
 
                     int l1 = this.getAlternativeTarget(i);
                     if (l1 > 0) {
-                        LivingEntity livingentity = (LivingEntity) this.level().getEntity(l1);
+                        LivingEntity livingentity = (LivingEntity) level.getEntity(l1);
                         if (livingentity != null && this.canAttack(livingentity) && !(this.distanceToSqr(livingentity) > 900.0D) && this.hasLineOfSight(livingentity)) {
                             this.performRangedAttack2();
                             this.nextHeadUpdate[i - 1] = this.tickCount + 40 + this.random.nextInt(20);
@@ -399,7 +405,7 @@ public class HarvestCrow extends WitherBoss {
                             this.setAlternativeTarget(i, 0);
                         }
                     } else {
-                        List<LivingEntity> list = this.level().getNearbyEntities(LivingEntity.class, TARGETING_CONDITIONS, this, this.getBoundingBox().inflate(20.0D, 8.0D, 20.0D));
+                        List<LivingEntity> list = level.getNearbyEntities(LivingEntity.class, TARGETING_CONDITIONS, this, this.getBoundingBox().inflate(20.0D, 8.0D, 20.0D));
                         if (!list.isEmpty()) {
                             LivingEntity livingentity1 = list.get(this.random.nextInt(list.size()));
                             this.setAlternativeTarget(i, livingentity1.getId());
@@ -416,7 +422,7 @@ public class HarvestCrow extends WitherBoss {
 
             if (this.destroyBlocksTick > 0) {
                 --this.destroyBlocksTick;
-                if (this.destroyBlocksTick == 0 && net.neoforged.neoforge.event.EventHooks.getMobGriefingEvent(this.level(), this)) {
+                if (this.destroyBlocksTick == 0 && net.neoforged.neoforge.event.EventHooks.canEntityGrief(level, this)) {
                     int j1 = Mth.floor(this.getY());
                     int i2 = Mth.floor(this.getX());
                     int j2 = Mth.floor(this.getZ());
@@ -447,7 +453,7 @@ public class HarvestCrow extends WitherBoss {
             this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(level);
 
     }
 
@@ -589,15 +595,15 @@ public class HarvestCrow extends WitherBoss {
             double d8 = this.getHeadX(l);
             double d10 = this.getHeadY(l);
             double d2 = this.getHeadZ(l);
-            this.level().addParticle(ParticleTypes.SMOKE, d8 + this.random.nextGaussian() * (double) 0.3F, d10 + this.random.nextGaussian() * (double) 0.3F, d2 + this.random.nextGaussian() * (double) 0.3F, 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(ParticleTypes.GUST, d8 + this.random.nextGaussian() * (double) 0.3F, d10 + this.random.nextGaussian() * (double) 0.3F, d2 + this.random.nextGaussian() * (double) 0.3F, 0.0D, -1.5D, 0.0D);
             if (flag && this.level().random.nextInt(4) == 0) {
-                this.level().addParticle(ParticleTypes.ENTITY_EFFECT, d8 + this.random.nextGaussian() * (double) 0.3F, d10 + this.random.nextGaussian() * (double) 0.3F, d2 + this.random.nextGaussian() * (double) 0.3F, 0.7F, 0.7F, 0.5D);
+                this.level().addParticle(ParticleTypes.GUST, d8 + this.random.nextGaussian() * (double) 0.3F, d10 + this.random.nextGaussian() * (double) 0.3F, d2 + this.random.nextGaussian() * (double) 0.3F, 0.7F, 3.7F, 0.5D);
             }
         }
 
         if (this.getInvulnerableTicks() > 0) {
             for (int i1 = 0; i1 < 3; ++i1) {
-                this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + this.random.nextGaussian(), this.getY() + (double) (this.random.nextFloat() * 3.3F), this.getZ() + this.random.nextGaussian(), 0.7F, 0.7F, 0.9F);
+                this.level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.7F, 0.7F, 0.9F), this.getX() + this.random.nextGaussian(), this.getY() + (double) (this.random.nextFloat() * 3.3F), this.getZ() + this.random.nextGaussian(), 0.7F, 0.7F, 0.9F);
             }
         }
 

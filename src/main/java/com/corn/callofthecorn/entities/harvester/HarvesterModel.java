@@ -4,8 +4,9 @@ import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
 
-public class HarvesterModel<T extends Harvester> extends SkeletonModel<T> {
+public class HarvesterModel extends SkeletonModel<SkeletonRenderState> {
 
     public HarvesterModel(ModelPart part){
         super(part);

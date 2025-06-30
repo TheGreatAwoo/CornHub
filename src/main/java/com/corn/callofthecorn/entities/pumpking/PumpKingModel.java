@@ -4,8 +4,9 @@ import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
 
-public class PumpKingModel<T extends PumpKing> extends SkeletonModel<T> {
+public class PumpKingModel extends SkeletonModel<SkeletonRenderState> {
 
 
     public PumpKingModel(ModelPart p_170941_) {

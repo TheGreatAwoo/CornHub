@@ -9,6 +9,8 @@ import com.corn.callofthecorn.entities.harvester.Harvester;
 import com.corn.callofthecorn.entities.pumpking.PumpKing;
 import com.corn.callofthecorn.entities.scarecrow.Scarecrow;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -31,7 +33,7 @@ public class CornMobs {
                     .setTrackingRange(80)
                  //   .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "scarecrow").toString())
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "scarecrow")))
 
     );
 
@@ -45,7 +47,7 @@ public class CornMobs {
                     .fireImmune()
                   //  .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "farmhand").toString())
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "farmhand")))
 
     );
 
@@ -58,7 +60,7 @@ public class CornMobs {
                     .fireImmune()
                     //  .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "harvester").toString())
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "harvester")))
 
     );
 
@@ -69,7 +71,7 @@ public class CornMobs {
                     .setTrackingRange(500)
                     .fireImmune()
                     .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "harvest").toString())
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "harvest")))
 
     );
 
@@ -80,7 +82,7 @@ public class CornMobs {
                     .setTrackingRange(20)
 //                    .fireImmune()
                     .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "cropwatcher").toString())
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "cropwatcher")))
 
     );
 
@@ -89,7 +91,7 @@ public class CornMobs {
                     .sized(EntityType.SKELETON.getWidth(), EntityType.SKELETON.getHeight())
                     .setTrackingRange(40)
                     .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "pumpking").toString())
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "pumpking")))
 
     );
 
@@ -99,7 +101,7 @@ public class CornMobs {
                     .sized(EntityType.PARROT.getWidth(),EntityType.PARROT.getHeight())
                     .setTrackingRange(40)
                     .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "crow").toString())
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "crow")))
 
     );
 
@@ -124,7 +126,7 @@ public class CornMobs {
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
                 .add(Attributes.MAX_HEALTH, Farmhand.MAX_HP)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.6)
-                .add(Attributes.ATTACK_DAMAGE,Farmhand.AttackDamage)
+                .add(Attributes.ATTACK_DAMAGE,Farmhand.ATTACK_DAMAGE)
                 .add(Attributes.ATTACK_SPEED,1)
                 .add(Attributes.ATTACK_KNOCKBACK,1)
                 .build());
@@ -173,7 +175,7 @@ public class CornMobs {
 
         event.put(CROW.get(), Mob.createMobAttributes()
                 .add(Attributes.MOVEMENT_SPEED, 0.4)
-                .add(Attributes.FLYING_SPEED,0.8F)
+                .add(Attributes.FLYING_SPEED,1.8F)
                 .add(Attributes.MAX_HEALTH, Crow.MAX_HP)
                 .add(Attributes.ATTACK_DAMAGE,Crow.DAMAGE)
                 .add(Attributes.ATTACK_SPEED,1)

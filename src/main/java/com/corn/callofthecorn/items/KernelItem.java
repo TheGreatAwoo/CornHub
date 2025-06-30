@@ -6,12 +6,13 @@ import com.google.common.collect.Multimap;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -19,7 +20,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,13 +29,12 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 public class KernelItem extends AxeItem {
-    public KernelItem(Tier p_40521_, float p_40522_, float p_40523_, Properties p_40524_) {
-
-        super(p_40521_, p_40522_, p_40523_, p_40524_);
+    public KernelItem(ToolMaterial p_40521_, float dmg, float speed, Properties p_40524_) {
+        super(p_40521_, dmg, speed, p_40524_);
     }
 
     private Multimap<Attribute, AttributeModifier> defaultModifiers;
-    boolean toddle = false; // TODO this is shared across all kernels, so may lead to odd behaviour
+    boolean toggle = false; // TODO this is shared across all kernels, so may lead to odd behaviour
     int Damage = 4;
     Player player;
 
@@ -50,12 +50,12 @@ public class KernelItem extends AxeItem {
 
 
         if (!player.isCrouching()) {
-            Enchant();
+            enchant(level, itemstack);
         }
 
 
-        if (player.isCrouching() || toddle) {
-            toddle = !toddle;
+        if (player.isCrouching() || toggle) {
+            toggle = !toggle;
             //player.setInvisible(toddle);
             double rot = player.getYRot();
             rot = rot / 180 * Math.PI;
@@ -71,24 +71,22 @@ public class KernelItem extends AxeItem {
 
             level.setBlock(blockpos, optional3.get(), 11);
             if (player != null) {
-                itemstack.hurtAndBreak(1, player, (p_150686_) -> {
-                    p_150686_.broadcastBreakEvent(p_40529_.getHand());
-                });
+                itemstack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.PASS;
         }
     }
 
-    public void Enchant() {
+    public void enchant(Level level, ItemStack stack) {
 
-        if (player != null) {
+        if (player != null && level instanceof ServerLevel) {
 
-            LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(player.level());
+            LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.spawn((ServerLevel) level, player.blockPosition(), EntitySpawnReason.TRIGGERED);
             Vec3i Pos = new Vec3i(player.blockPosition().getX(), player.blockPosition().getY() + 3, player.blockPosition().getZ());
-            lightningbolt.moveTo(Vec3.atBottomCenterOf(Pos));
+            lightningbolt.setPos(Vec3.atBottomCenterOf(Pos));
             player.level().addFreshEntity(lightningbolt);
 
             player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 300));
@@ -108,7 +106,7 @@ public class KernelItem extends AxeItem {
                 player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 300));
             }
             if (c > 3) {
-                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 300));
+                player.addEffect(new MobEffectInstance(MobEffects.SPEED, 300));
             }
 
             if (m > 0) {
@@ -121,35 +119,14 @@ public class KernelItem extends AxeItem {
                 player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 300));
             }
             if (m > 3) {
-                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300));
+                player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 300));
             }
 
             if (k > 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, k));
             }
 
-            player.getCooldowns().addCooldown(this, 150);
+            player.getCooldowns().addCooldown(stack, 150);
         }
-    }
-
-
-    @Override
-    public boolean hurtEnemy(ItemStack p_40994_, LivingEntity p_40995_, LivingEntity p_40996_) {
-        p_40994_.hurtAndBreak(2, p_40996_, (p_41007_) -> {
-            p_41007_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-            //LightningBolt hol = new LightningBolt();
-            //p_40995_.thunderHit(hol,);
-        });
-        return true;
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return true;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return false;
     }
 }

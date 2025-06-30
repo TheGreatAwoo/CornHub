@@ -1,8 +1,8 @@
 {
-    "item.callofthecorn.cornmetalpants":"Corn Metal Pants",
-    "item.callofthecorn.cornmetalfeet":"Corn Metal Shoes",
-    "item.callofthecorn.cornmetalhead":"Corn Metal Helmet",
-    "item.callofthecorn.cornmetalchest":"Corn Metal Chestplate",
+    "item.callofthecorn.cornmetalpants":"Cornmetal Pants",
+    "item.callofthecorn.cornmetalfeet":"Cornmetal Shoes",
+    "item.callofthecorn.cornmetalhead":"Cornmetal Helmet",
+    "item.callofthecorn.cornmetalchest":"Cornmetal Chestplate",
 
     "item.callofthecorn.lessersoul":"Lesser Soul",
     "item.callofthecorn.mildsoul":"Mild Soul",
@@ -19,13 +19,13 @@
     "item.callofthecorn.maizeriteshovel":"Maizerite Shovel",
     "item.callofthecorn.maizeritebow":"Maizerite Bow",
 
-    "item.callofthecorn.cornmetalbar":"Corn Ingot",
-    "item.callofthecorn.cornmetalaxe":"Corn Metal Axe",
-    "item.callofthecorn.cornmetalhoe":"Corn Metal Hoe",
-    "item.callofthecorn.cornmetalpick":"Corn Metal Pickaxe",
-    "item.callofthecorn.cornmetalsword":"Corn Metal Sword",
-    "item.callofthecorn.cornmetalshovel":"Corn Metal Shovel",
-    "item.callofthecorn.cornmetalbow":"Corn Metal Bow",
+    "item.callofthecorn.cornmetalbar":"Cornmetal Ingot",
+    "item.callofthecorn.cornmetalaxe":"Cornmetal Axe",
+    "item.callofthecorn.cornmetalhoe":"Cornmetal Hoe",
+    "item.callofthecorn.cornmetalpick":"Cornmetal Pickaxe",
+    "item.callofthecorn.cornmetalsword":"Cornmetal Sword",
+    "item.callofthecorn.cornmetalshovel":"Cornmetal Shovel",
+    "item.callofthecorn.cornmetalbow":"Cornmetal Bow",
 
     "item.callofthecorn.maizeritepants":"Maizerite Pants",
     "item.callofthecorn.maizeritehead":"Maizerite Helmet",
@@ -36,12 +36,14 @@
     "item.callofthecorn.corn":"Corn",
     "item.callofthecorn.cornsoul":"Corn Soul",
     "item.callofthecorn.popcorn":"Popcorn",
+    "item.callofthecorn.corn_bucket":"Bucket of Corn",
+    "item.callofthecorn.popcorn_bucket":"Popcorn Bucket",
     "item.callofthecorn.creamedcorn":"Creamed Corn",
 
 
 
     "item.callofthecorn.cornstaff":"Corn Staff",
-    "item.callofthecorn.cornmetalstaff":"Corn Metal Staff",
+    "item.callofthecorn.cornmetalstaff":"Cornmetal Staff",
     "item.callofthecorn.maizeritestaff":"Maizerite Staff",
     "item.callofthecorn.crowstaff":"Crow Staff",
     "item.callofthecorn.harveststaff":"Harvest Staff",

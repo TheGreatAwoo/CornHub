@@ -121,6 +121,9 @@ public class HarvesterAttackGoal <T extends Harvester> extends Goal {
                 this.attackTime = this.attackIntervalMin;
             }
 
+        } else if (mob.isNoGravity()) {
+            mob.fallDistance = 0;
+            mob.setDeltaMovement(0,-0.2f,0);
         }
     }
 
@@ -133,11 +136,12 @@ public class HarvesterAttackGoal <T extends Harvester> extends Goal {
         float x = fwdAmount * cos - rightAmount * sin;
         float z = rightAmount * cos + fwdAmount * sin;
         float y = 0;
-        if(mob.getY() < mob.getTarget().getY() + 3) {
-            y = 0.1f;
-        } else if(mob.getY() > mob.getTarget().getY() - 30) {
-            y = -0.03f;
+        if(mob.getY() < mob.getTarget().getY() + 3.5) {
+            y = 0.12f;
+        } else if(mob.getY() > mob.getTarget().getY() + 12) {
+            y = -0.12f;
         }
+        mob.fallDistance = 0;
         mob.setDeltaMovement(x,y,z);
 
     }

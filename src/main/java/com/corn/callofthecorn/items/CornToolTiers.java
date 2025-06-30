@@ -1,78 +1,16 @@
 package com.corn.callofthecorn.items;
 
-import com.corn.callofthecorn.init.CornItems;
-import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
+import com.corn.callofthecorn.data.CornTags;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.ToolMaterial;
 
-import java.util.function.Supplier;
+public class CornToolTiers {
 
-public enum CornToolTiers implements Tier {
+    public static final ToolMaterial CORNMETAL = new ToolMaterial(BlockTags.INCORRECT_FOR_IRON_TOOL, 180,
+            9.0F, 2.0F, 1, CornTags.Items.CORN_TOOL_MATERIALS);
+    public static final ToolMaterial MAIZERITE = new ToolMaterial(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 2500,
+            8.0F, 4.0F, 1, CornTags.Items.MAIZERITE_TOOL_MATERIALS);
+    public static final ToolMaterial KERNALRITE = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 3000,
+            9.0F, 5.0F, 1, CornTags.Items.MAIZERITE_TOOL_MATERIALS);
 
-    CORNMETAL(2, 1000, 9F, 2.0F, 1, () -> {
-        return Ingredient.of(CornItems.CORNMETALBAR.get());
-    }),
-    MAIZERITE(4, 2500, 8.0F, 4.0F, 1, () -> {
-        return Ingredient.of(CornItems.MAIZERITE.get());
-    }),
-
-    KERNALRITE(4, 3000, 9.0F, 5.0F, 1, () -> {
-        return Ingredient.of(CornItems.MAIZERITE.get());
-    }),
-    CUSTOM(1, 3000, 7.0F, 1.0F, 1, () -> {
-        return Ingredient.of(Items.IRON_INGOT);
-    });
-
-
-    private final int level;
-    private final int uses;
-    private final float speed;
-    private final float damage;
-    private final int enchantmentValue;
-    private final LazyLoadedValue<Ingredient> repairIngredient;
-
-
-    private CornToolTiers(int level, int use, float speed, float dam, int enchant, Supplier<Ingredient> p_43337_) {
-        this.level = level;
-        this.uses = use;
-        this.speed = speed;
-        this.damage = dam;
-        this.enchantmentValue = enchant;
-        this.repairIngredient = new LazyLoadedValue<>(p_43337_);
-    }
-
-    public int getUses() {
-        return this.uses;
-    }
-
-    public float getSpeed() {
-        return this.speed;
-    }
-
-    public float getAttackDamageBonus() {
-        return this.damage;
-    }
-
-    public int getLevel() {
-        return this.level;
-    }
-
-    public int getEnchantmentValue() {
-        return this.enchantmentValue;
-    }
-
-    public Ingredient getRepairIngredient() {
-        return this.repairIngredient.get();
-    }
-
-//    @javax.annotation.Nullable public net.minecraft.tags.Tag<net.minecraft.world.level.block.Block> getTag() {
-//        return switch (this){
-//            case CORNMETAL -> BlockTags.NEEDS_IRON_TOOL;
-//            case MAIZERITE -> BlockTags.NEEDS_DIAMOND_TOOL;
-//            case KERNALRITE -> BlockTags.NEEDS_DIAMOND_TOOL;
-//            case CUSTOM -> BlockTags.NEEDS_IRON_TOOL;
-//
-//        };
-//         }
 }

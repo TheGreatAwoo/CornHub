@@ -4,6 +4,8 @@ import com.corn.callofthecorn.init.CornItems;
 import com.corn.callofthecorn.init.CornMobs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,43 +17,40 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Map;
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Random;
 
 
 public class Farmhand extends AbstractSkeleton {
 
-    public static int MAX_HP = 250;
-    public static int AttackDamage=8;
-    public LivingEntity target;
-    public double distance;
+    public static final int MAX_HP = 250;
+    public static final int ATTACK_DAMAGE = 8;
     private final ServerBossEvent bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
 
     public Farmhand(EntityType<? extends Farmhand> type, Level level) {
         super(type, level);
-
+        this.xpReward = 20;
     }
 
     @Override
@@ -67,51 +66,48 @@ public class Farmhand extends AbstractSkeleton {
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
     }
 
+    public float lasthp = this.getHealth();
 
     @Override
-    public int getExperienceReward (){
-        return 20;
-    }
+    public void tick() {
+        super.tick();
+        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
 
-    public float LastHp = this.getMaxHealth();
+        int hold = new Random().nextInt(3);
 
-    @Override
-        public void tick() {
-            super.tick();
-            this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
-
-
-            int Hold = new Random().nextInt(3);
-
-            if (Hold == 1 && LastHp > this.getHealth() && target != null) {
-                EntityType<?> entitytype = CornMobs.CROPWATCHER.get();
-                ItemStack itemstack = new ItemStack(Items.ZOMBIE_VILLAGER_SPAWN_EGG);
+        if (lasthp > this.getHealth() + 4) {
+            if (hold == 1 && getTarget() != null) { // 1/3 chance of spawning enemy per 4 hp of damage
+                EntityType<?> watcher = CornMobs.CROPWATCHER.get();
                 BlockPos blockpos1;
                 BlockPos blockpos = this.blockPosition();
                 Direction direction = this.getDirection();
                 blockpos1 = blockpos.relative(direction);
 
-
-                entitytype.spawn((ServerLevel) level(), itemstack, target.level().getNearestPlayer(this, 0),
-                        blockpos1, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, blockpos1)
+                watcher.spawn((ServerLevel) level(), null, level().getNearestPlayer(this, 0),
+                        blockpos1, EntitySpawnReason.TRIGGERED, true, !Objects.equals(blockpos, blockpos1)
                                 && direction == Direction.UP);
             }
+            lasthp = Math.max(this.getHealth(), lasthp - 8);
 
-        LastHp = this.getHealth();
-
-
-        if(target!=null){
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2 + d1 * d1);
-        distance = d3;
-        System.out.println(distance);
-
-        if (distance > 10) {
-            teleportTowards(target);
         }
-    }
+
+        if(getTarget() != null){
+            double distance = distanceTo(getTarget());
+
+            if (distance > 10) {
+                teleportTowards(getTarget());
+            }
+
+            distance = distanceTo(getTarget());
+
+            if (distance > 5) {
+                setAttackState(level(), true);
+            } else if(distance < 3) {
+                setAttackState(level(), false);
+            }
+
+
+        }
 
     }
 
@@ -129,30 +125,39 @@ public class Farmhand extends AbstractSkeleton {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource p_219059_, DifficultyInstance p_219060_) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-
-            ItemStack itemstack = this.getMainHandItem();
-            if (itemstack.is(Items.BOW)) {
-                Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(itemstack);
-                map.putIfAbsent(Enchantments.POWER_ARROWS, 3);
-                EnchantmentHelper.setEnchantments(map, itemstack);
-                this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
-            }
-
-
+        this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
     }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
-        super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance diff, EntitySpawnReason reason, @Nullable SpawnGroupData data) {
+        setAttackState(level, false);
+        return super.finalizeSpawn(level, diff, reason, data);
+    }
 
-        ItemEntity itementity = this.spawnAtLocation(CornItems.MILDSOUL.get().getDefaultInstance().copyWithCount(2 + random.nextInt(3)));
+    private void setAttackState(LevelAccessor level, boolean ranged) {
+        if(ranged) {
+            if(getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()) {
+                ItemStack itemstack = new ItemStack(Items.BOW);
+                Holder.Reference<Enchantment> power = level.registryAccess().lookup(Registries.ENCHANTMENT).get().get(Enchantments.POWER).get();
+                itemstack.enchant(power, 3);
+                this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
+            }
+        } else if (!getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()){
+            this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        }
+    }
+
+    @Override
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource p_31464_, boolean p_31466_) {
+        super.dropCustomDeathLoot(level, p_31464_, p_31466_);
+
+        ItemEntity itementity = this.spawnAtLocation(level, CornItems.MILD_SOUL.get().getDefaultInstance().copyWithCount(2 + random.nextInt(3)));
         if (itementity != null) {
             itementity.setGlowingTag(true);
             itementity.setInvulnerable(true);
         }
         if(random.nextInt(10) == 0) {
-            ItemEntity foot = this.spawnAtLocation(CornItems.CROWSFOOT.get());
+            ItemEntity foot = this.spawnAtLocation(level, CornItems.CROWSFOOT.get());
             if (foot != null) {
                 foot.setGlowingTag(true);
                 foot.setInvulnerable(true);
@@ -162,74 +167,23 @@ public class Farmhand extends AbstractSkeleton {
 
 
     @Override
-    public boolean doHurtTarget(Entity p_28837_) {
-        if (distance < 4) {
-           // this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(null));
-            this.level().broadcastEntityEvent(this, (byte) 4);
-            float f = AttackDamage;
-            float f1 = (int) f > 0 ? f / 2.0F + (float) this.random.nextInt((int) f) : f;
-            boolean flag = p_28837_.hurt(level().damageSources().mobAttack(this), f1);
-            if (flag) {
-                p_28837_.setDeltaMovement(p_28837_.getDeltaMovement().add(0.5D, (double) 0.8F, 0.0D));
-                this.doEnchantDamageEffects(this, p_28837_);
-            }
-
-            this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-
-            ItemStack itemstack = this.getMainHandItem();
-            if (itemstack.is(Items.BOW)) {
-                Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(itemstack);
-                map.putIfAbsent(Enchantments.POWER_ARROWS, 3);
-                EnchantmentHelper.setEnchantments(map, itemstack);
-                this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
-            }
-
-            return flag;
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
+        this.level().broadcastEntityEvent(this, (byte) 4);
+        float f = ATTACK_DAMAGE;
+        float f1 = (int)f > 0 ? f / 2.0F + this.random.nextInt((int)f) : f;
+        DamageSource damagesource = this.damageSources().mobAttack(this);
+        boolean flag = target.hurtServer(level, damagesource, f1);
+        if (flag) {
+            double d0 = target instanceof LivingEntity livingentity ? livingentity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) : 0.0;
+            double d1 = Math.max(0.0, 1.0 - d0);
+            target.setDeltaMovement(target.getDeltaMovement().add(0.0, 0.4F * d1, 0.0));
+            EnchantmentHelper.doPostAttackEffects(level, target, damagesource);
         }
-        else{
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
 
-            ItemStack itemstack = this.getMainHandItem();
-            if (itemstack.is(Items.BOW)) {
-                Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(itemstack);
-                map.putIfAbsent(Enchantments.POWER_ARROWS, 3);
-                EnchantmentHelper.setEnchantments(map, itemstack);
-                this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
-            }
-
-            return false;}
-
+        this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        return flag;
     }
 
-    @Override
-    public void performRangedAttack(LivingEntity p_32141_, float p_32142_) {
-        target = p_32141_;
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getY() - this.getY();
-        double d2 = target.getZ() - this.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2+d1*d1);
-        distance = d3;
-        System.out.println(distance);
-
-        if (distance > 10) {teleportTowards(target);}
-
-        if (distance > 4) {
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-            ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, item -> item instanceof net.minecraft.world.item.BowItem)));
-            AbstractArrow abstractarrow = this.getArrow(itemstack, p_32142_);
-             d0 = p_32141_.getX() - this.getX();
-             d1 = p_32141_.getY(0.3333333333333333D) - abstractarrow.getY();
-             d2 = p_32141_.getZ() - this.getZ();
-             d3 = Math.sqrt(d0 * d0 + d2 * d2);
-            abstractarrow = ((net.minecraft.world.item.BowItem) this.getMainHandItem().getItem()).customArrow(abstractarrow, itemstack);
-            abstractarrow.shoot(d0, d1 + d3 * (double) 0.2F, d2, 1.6F, (float) (14 - this.level().getDifficulty().getId() * 4));
-            this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-            this.level().addFreshEntity(abstractarrow);
-        } else {
-            this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-        }
-    }
     @Override
     protected SoundEvent getAmbientSound() {
         return SoundEvents.ZOMBIE_VILLAGER_AMBIENT;
@@ -274,7 +228,7 @@ public class Farmhand extends AbstractSkeleton {
     private boolean teleport(double p_32544_, double p_32545_, double p_32546_) {
         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(p_32544_, p_32545_, p_32546_);
 
-        while(blockpos$mutableblockpos.getY() > this.level().getMinBuildHeight() && !this.level().getBlockState(blockpos$mutableblockpos).blocksMotion()) {
+        while(blockpos$mutableblockpos.getY() > this.level().getMinY() && !this.level().getBlockState(blockpos$mutableblockpos).blocksMotion()) {
             blockpos$mutableblockpos.move(Direction.DOWN);
         }
 

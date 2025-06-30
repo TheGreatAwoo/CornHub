@@ -4,7 +4,6 @@ import com.corn.callofthecorn.entities.LightingBall;
 import com.corn.callofthecorn.init.CornItems;
 import com.corn.callofthecorn.init.CornMobs;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +13,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -25,20 +23,13 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Objects;
 
 public class Harvester extends AbstractSkeleton {
 
@@ -49,11 +40,6 @@ public class Harvester extends AbstractSkeleton {
     private int crowTracker = 10;
     private boolean hasUlted = false;
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
-
-    @Override
-    public int getExperienceReward() {
-        return 120;
-    }
 
     @Override
     public void startSeenByPlayer(ServerPlayer p_31483_) {
@@ -72,11 +58,14 @@ public class Harvester extends AbstractSkeleton {
         this.canSpawnSprintParticle();
         this.setCanPickUpLoot(false);
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+        this.xpReward = 120;
+        this.setPersistenceRequired();
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(4, new HarvesterAttackGoal<>(this, 1.5D, 60, 25.0F));
+        this.goalSelector.addGoal(3, new HarvesterAttackGoal<>(this, 1.5D, 60, 25.0F));
+        this.goalSelector.addGoal(4, new DescendGoal<>(this, this.getMaxHealth() / 5, 0.1f));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
@@ -92,15 +81,15 @@ public class Harvester extends AbstractSkeleton {
     }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource p_31464_, int p_31465_, boolean p_31466_) {
-        super.dropCustomDeathLoot(p_31464_, p_31465_, p_31466_);
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean p_31466_) {
+        super.dropCustomDeathLoot(level, source, p_31466_);
 
-        ItemEntity itementity = this.spawnAtLocation(CornItems.GREATERSOUL.get().getDefaultInstance().copyWithCount(2 + random.nextInt(3)));
+        ItemEntity itementity = this.spawnAtLocation(level, CornItems.GREATER_SOUL.get().getDefaultInstance().copyWithCount(2 + random.nextInt(3)));
         itementity.setGlowingTag(true);
         itementity.setInvulnerable(true);
 
         if (random.nextInt(5) == 0) {
-            this.spawnAtLocation(CornItems.HARVESTERSCYTHE.get());
+            this.spawnAtLocation(level, CornItems.HARVESTERSCYTHE.get());
         }
     }
 
@@ -119,11 +108,8 @@ public class Harvester extends AbstractSkeleton {
     }
 
     @Override
-    public boolean hurt(DamageSource src, float amount) {
-        if(src.is(DamageTypeTags.IS_EXPLOSION)) {
-            return false;
-        }
-        return super.hurt(src, amount);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return super.isInvulnerableTo(level, source) || source.is(DamageTypeTags.IS_EXPLOSION);
     }
 
     public void castSpell(LivingEntity target, boolean canSeeTarget) {
@@ -163,7 +149,7 @@ public class Harvester extends AbstractSkeleton {
     }
 
     private void castUltimate(LivingEntity target, int bossStage) {
-        this.setDeltaMovement(0, .5, 0);
+        this.setDeltaMovement(0, .4, 0);
         this.setNoGravity(true);
         castLighting(target, bossStage);
     }
@@ -175,12 +161,9 @@ public class Harvester extends AbstractSkeleton {
             int zran = random.nextInt(10 + 2*bossStage) - 5 - bossStage;
             int yoff = sky ? 30 : 10;
 
-            LargeFireball largefireball = new LargeFireball(level(), this, 0,-1,0, bossStage);
+            LargeFireball largefireball = new LargeFireball(level(), this, new Vec3(0,-1,0), bossStage);
             largefireball.setPos(this.getX() + xran, this.getY() + yoff, largefireball.getZ() + zran);
 
-            largefireball.xPower = 0;
-            largefireball.zPower = 0;
-            largefireball.yPower = -0.3 - random.nextFloat()*.2;
             level().addFreshEntity(largefireball);
         }
     }
@@ -193,7 +176,7 @@ public class Harvester extends AbstractSkeleton {
 
         for (int i = 0; i < bossStage + 2; i++) {
             Vec3 offset = new Vec3(random.nextFloat() - 0.5, random.nextFloat() - 0.5, random.nextFloat() - 0.5).scale(5);
-            LargeFireball ball = new LargeFireball(level(), this, delta.x, delta.y, delta.z, bossStage);
+            LargeFireball ball = new LargeFireball(level(), this, new Vec3(delta.x, delta.y, delta.z), bossStage);
             ball.setPos(castPos.add(offset));
             level().addFreshEntity(ball);
         }
@@ -203,7 +186,7 @@ public class Harvester extends AbstractSkeleton {
         Vec3 viewVector = this.getViewVector(1.0F);
         Vec3 castPos = this.getPosition(1.f).add(viewVector.scale(3));
         Vec3 delta = target.getEyePosition().subtract(castPos);
-        LightingBall ball = new LightingBall(level(), this, delta.x, delta.y, delta.z, bossStage);
+        LightingBall ball = new LightingBall(level(), this, new Vec3(delta.x, delta.y, delta.z), bossStage);
         ball.setPos(castPos);
         level().addFreshEntity(ball);
     }
@@ -212,7 +195,7 @@ public class Harvester extends AbstractSkeleton {
         Vec3 viewVector = this.getViewVector(1.0F);
         Vec3 castPos = this.getPosition(1.f).add(viewVector.scale(3));
         Vec3 delta = target.getEyePosition().subtract(castPos);
-        LargeFireball ball = new LargeFireball(level(), this, delta.x, delta.y, delta.z, bossStage);
+        LargeFireball ball = new LargeFireball(level(), this, new Vec3(delta.x, delta.y, delta.z), bossStage);
         ball.setPos(castPos);
         level().addFreshEntity(ball);
     }
@@ -224,14 +207,14 @@ public class Harvester extends AbstractSkeleton {
             int zran = random.nextInt(40);
             BlockPos spawnPos = this.blockPosition().offset(-20 + xran, 4, -20 + zran);
             if(xran*xran + zran*zran > 16 && level().isEmptyBlock(spawnPos)) {
-                entitytype.spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
+                entitytype.spawn((ServerLevel) level(), spawnPos, EntitySpawnReason.MOB_SUMMONED);
             }
         }
     }
 
     @Override
     protected SoundEvent getStepSound() {
-        return SoundEvents.SKELETON_STEP;
+        return SoundEvents.RAVAGER_STEP;
     }
 
 }
