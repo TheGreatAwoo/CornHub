@@ -32,7 +32,8 @@
     "item.callofthecorn.maizeritefeet":"Maizerite Shoes",
     "item.callofthecorn.maizeritechest":"Maizerite Chestplate",
 
-    "item.callofthecorn.kernal":"The Kernal",
+    "item.callofthecorn.kernal":"The Kernel",
+    "item.callofthecorn.pumpkingscrown":"Pump Kings's Crown",
     "item.callofthecorn.corn":"Corn",
     "item.callofthecorn.cornsoul":"Corn Soul",
     "item.callofthecorn.popcorn":"Popcorn",
@@ -53,7 +54,7 @@
     "item.callofthecorn.crowsfoot":"Crow's Foot",
 
 
-    "block.callofthecorn.corn_seed":"Corn Seeds",
+    "item.callofthecorn.corn_seed":"Corn Seeds",
 
     "biome.callofthecorn.cornbiome": "Corn Biome",
 
