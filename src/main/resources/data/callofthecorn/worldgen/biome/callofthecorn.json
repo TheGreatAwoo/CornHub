@@ -3,7 +3,6 @@
   "downfall": 0.4,
   "has_precipitation": true,
   "temperature_modifier": "none",
-  "creature_spawn_probability": 0.99,
   "effects": {
     "sky_color": 24927,
     "fog_color": 16761512,
@@ -14,6 +13,36 @@
     "grass_color_modifier": "swamp"
   },
   "spawners": {
+    "ambient": [
+      {
+        "type": "minecraft:bat",
+        "maxCount": 8,
+        "minCount": 8,
+        "weight": 10
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:pig",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 10
+      },
+      {
+        "type": "minecraft:cow",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 8
+      },
+      {
+        "type": "minecraft:donkey",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 1
+      }
+    ],
+    "misc": [],
     "monster": [
       {
         "type": "callofthecorn:pumpking",
@@ -34,26 +63,16 @@
         "maxCount": 10
       }
     ],
-    "creature": [
+    "underground_water_creature": [
       {
-        "type": "minecraft:cow",
-        "weight": 20,
-        "minCount": 2,
-        "maxCount": 5
-      },
-      {
-        "type": "minecraft:pig",
-        "weight": 10,
-        "minCount": 2,
-        "maxCount": 5
-      },
-      {
-        "type": "minecraft:donkey",
-        "weight": 5,
-          "minCount": 1,
-        "maxCount": 3
+        "type": "minecraft:glow_squid",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 10
       }
-    ]
+    ],
+    "water_ambient": [],
+    "water_creature": []
   },
   "spawn_costs": {},
   "carvers": [
